@@ -22,34 +22,21 @@ namespace ESPL.NG.Services
                { "UserName", new PropertyMappingValue(new List<string>() { "UserName" } )}
           };
 
-        private Dictionary<string, PropertyMappingValue> _employeePropertyMapping =
+        private Dictionary<string, PropertyMappingValue> _customerPropertyMapping =
             new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
         {
-            { "EmployeeID", new PropertyMappingValue(new List<string>() { "EmployeeID" } ) },
-            { "FirstName", new PropertyMappingValue(new List<string>() { "FirstName" } ) },
-            { "LastName", new PropertyMappingValue(new List<string>() { "LastName" } ) },
-            { "EmployeeCode", new PropertyMappingValue(new List<string>() { "EmployeeCode" } ) },
-            { "DateofBirth", new PropertyMappingValue(new List<string>() { "DateofBirth" } ) },
-            { "Gender", new PropertyMappingValue(new List<string>() { "Gender" } ) },
+            { "CustomerID", new PropertyMappingValue(new List<string>() { "CustomerID" } ) },
+            { "CustomerName", new PropertyMappingValue(new List<string>() { "CustomerName" } ) },
             { "Mobile", new PropertyMappingValue(new List<string>() { "Mobile" } ) },
-            { "Email", new PropertyMappingValue(new List<string>() { "Email" } ) },
-            { "ResidencePhone1", new PropertyMappingValue(new List<string>() { "ResidencePhone1" } ) },
-            { "OrganizationJoiningDate", new PropertyMappingValue(new List<string>() { "OrganizationJoiningDate" } ) },
-            { "ServiceJoiningDate", new PropertyMappingValue(new List<string>() { "ServiceJoiningDate" } ) },
-            { "Address1", new PropertyMappingValue(new List<string>() { "Mobile" } ) },
-            { "Address2", new PropertyMappingValue(new List<string>() { "Email" } ) },
-            { "AreaID", new PropertyMappingValue(new List<string>() { "ResidencePhone1" } ) },
-            { "DepartmentID", new PropertyMappingValue(new List<string>() { "DepartmentID" } ) },
-            { "DesignationID", new PropertyMappingValue(new List<string>() { "DesignationID" } ) },
-            { "ShiftID", new PropertyMappingValue(new List<string>() { "ShiftID" } ) },
-            { "UserID", new PropertyMappingValue(new List<string>() { "UserID" } ) },
-            { "MstArea.AreaName", new PropertyMappingValue(new List<string>() { "MstArea.AreaName" } ) },
-            { "MstDesignation.DesignationName", new PropertyMappingValue(new List<string>() { "MstDesignation.DesignationName" } ) },
-            { "MstDepartment.DepartmentName", new PropertyMappingValue(new List<string>() { "MstDepartment.DepartmentName" } ) },
-            { "MstShift.ShiftName", new PropertyMappingValue(new List<string>() { "MstShift.ShiftName" } ) },
-            { "MstOccurrenceBooks.MstStatus.StatusName", new PropertyMappingValue(new List<string>() { "MstOccurrenceBooks.MstStatus.StatusName" } ) },
-            { "MstOccurrenceBooks.MstOccurrenceType.OBTypeName", new PropertyMappingValue(new List<string>() { "MstOccurrenceBooks.MstOccurrenceType.OBTypeName" } ) },
-            { "AppUser.UserName", new PropertyMappingValue(new List<string>() { "AppUser.UserName" } ) }
+            { "Landline", new PropertyMappingValue(new List<string>() { "Landline" } ) },
+            { "DateOfBirth", new PropertyMappingValue(new List<string>() { "DateOfBirth" } ) },
+            { "CustomerEmail", new PropertyMappingValue(new List<string>() { "CustomerEmail" } ) },
+            { "CustomerAddress", new PropertyMappingValue(new List<string>() { "CustomerAddress" } ) },
+            { "Status", new PropertyMappingValue(new List<string>() { "Status" } ) },
+            { "DistributorName", new PropertyMappingValue(new List<string>() { "DistributorName" } ) },
+            { "DistributorAddress", new PropertyMappingValue(new List<string>() { "DistributorAddress" } ) },
+            { "DistributorContact", new PropertyMappingValue(new List<string>() { "DistributorContact" } ) },
+            
         };
 
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
@@ -57,7 +44,7 @@ namespace ESPL.NG.Services
         public PropertyMappingService()
         {
             propertyMappings.Add(new PropertyMapping<AppUserDto, AppUser>(_esplUserPropertyMapping));
-            propertyMappings.Add(new PropertyMapping<EmployeeDto, Employee>(_employeePropertyMapping));
+            propertyMappings.Add(new PropertyMapping<CustomerDto, Customer>(_customerPropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()
