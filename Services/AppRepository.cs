@@ -102,7 +102,7 @@ namespace ESPL.NG.Services
         public PagedList<Customer> GetCustomers(CustomerResourceParameters CustomersResourceParameters)
         {
             var collectionBeforePaging =
-                _context.Customer                
+                _context.Customer.Where(c => !c.IsDelete)
                 .ApplySort(CustomersResourceParameters.OrderBy,
                 _propertyMappingService.GetPropertyMapping<CustomerDto, Customer>());
 
@@ -116,7 +116,7 @@ namespace ESPL.NG.Services
                     .Where(a => a.CustomerName.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.Mobile.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.Landline.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)                    
+                    || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.CustomerEmail.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.DistributorName.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.DistributorContact.ToLowerInvariant().Contains(searchQueryForWhereClause));
@@ -144,7 +144,7 @@ namespace ESPL.NG.Services
             return _context.Customer
             .Where(a => a.IsDelete == false)
             .FirstOrDefault(a => a.CustomerID == CustomerId);
-        }       
+        }
 
 
         public IEnumerable<Customer> GetCustomers(IEnumerable<Guid> CustomerIds)
