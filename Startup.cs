@@ -234,15 +234,15 @@ namespace ESPL.NG
             {
                 cfg.CreateMap<ESPL.NG.Entities.AppUser, ESPL.NG.Models.Core.AppUserDto>();
                 cfg.CreateMap<ESPL.NG.Models.Core.AppUserForCreationDto, ESPL.NG.Entities.AppUser>();
-                cfg.CreateMap<ESPL.NG.Entities.Employee, ESPL.NG.Models.EmployeeDto>();
-                cfg.CreateMap<ESPL.NG.Models.EmployeeForCreationDto, ESPL.NG.Entities.Employee>();
-                cfg.CreateMap<ESPL.NG.Entities.Employee, ESPL.NG.Models.EmployeeForCreationDto>();
-                cfg.CreateMap<ESPL.NG.Models.EmployeeForUpdationDto, ESPL.NG.Entities.Employee>();
-                cfg.CreateMap<ESPL.NG.Entities.Employee, ESPL.NG.Models.EmployeeForUpdationDto>();
+                cfg.CreateMap<ESPL.NG.Entities.Customer, ESPL.NG.Models.CustomerDto>();
+                cfg.CreateMap<ESPL.NG.Models.CustomerForCreationDto, ESPL.NG.Entities.Customer>();
+                cfg.CreateMap<ESPL.NG.Entities.Customer, ESPL.NG.Models.CustomerForCreationDto>();
+                cfg.CreateMap<ESPL.NG.Models.CustomerForUpdationDto, ESPL.NG.Entities.Customer>();
+                cfg.CreateMap<ESPL.NG.Entities.Customer, ESPL.NG.Models.CustomerForUpdationDto>();
             });
 
             // identitySeeder.Seed().Wait();
-            // naturalGasContext.EnsureSeedDataForContext();
+            naturalGasContext.EnsureSeedDataForContext();
             app.UseIpRateLimiting();
             app.UseHttpCacheHeaders();
             app.UseDefaultFiles();

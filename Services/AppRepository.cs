@@ -7,7 +7,7 @@ using System.Linq;
 using ESPL.NG.Helpers.Core;
 using ESPL.NG.Entities.Core;
 using ESPL.NG.Models.Core;
-using ESPL.NG.Helpers.Employee;
+using ESPL.NG.Helpers.Customer;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -98,106 +98,84 @@ namespace ESPL.NG.Services
 
         #endregion AppUser
 
-        #region Employee
-        public PagedList<Employee> GetEmployees(EmployeesResourceParameters employeesResourceParameters)
+        #region Customer
+        public PagedList<Customer> GetCustomers(CustomerResourceParameters CustomersResourceParameters)
         {
             var collectionBeforePaging =
-                _context.Employee
-                .Where(a => a.IsDelete == false)
-                .Include(e => e.AppUser)
-                .ApplySort(employeesResourceParameters.OrderBy,
-                _propertyMappingService.GetPropertyMapping<EmployeeDto, Employee>());
+                _context.Customer                
+                .ApplySort(CustomersResourceParameters.OrderBy,
+                _propertyMappingService.GetPropertyMapping<CustomerDto, Customer>());
 
-            if (!string.IsNullOrEmpty(employeesResourceParameters.SearchQuery))
+            if (!string.IsNullOrEmpty(CustomersResourceParameters.SearchQuery))
             {
                 // trim & ignore casing
-                var searchQueryForWhereClause = employeesResourceParameters.SearchQuery
+                var searchQueryForWhereClause = CustomersResourceParameters.SearchQuery
                     .Trim().ToLowerInvariant();
 
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.FirstName.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.LastName.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.EmployeeCode.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.Gender.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    .Where(a => a.CustomerName.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.Mobile.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.Email.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.AppUser.UserName.ToLowerInvariant().Contains(searchQueryForWhereClause));
+                    || a.Landline.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)                    
+                    || a.CustomerEmail.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.DistributorName.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.DistributorContact.ToLowerInvariant().Contains(searchQueryForWhereClause));
 
             }
 
-            return PagedList<Employee>.Create(collectionBeforePaging,
-                employeesResourceParameters.PageNumber,
-                employeesResourceParameters.PageSize);
+            return PagedList<Customer>.Create(collectionBeforePaging,
+                CustomersResourceParameters.PageNumber,
+                CustomersResourceParameters.PageSize);
         }
 
-        public IEnumerable<LookUpItem> GetEmployeeAsLookUp()
+        public IEnumerable<LookUpItem> GetCustomerAsLookUp()
         {
-            return (from a in _context.Employee
+            return (from a in _context.Customer
                     where a.IsDelete == false
                     select new LookUpItem
                     {
-                        ID = a.EmployeeID,
-                        Name = a.FirstName + " " + a.LastName
+                        ID = a.CustomerID,
+                        Name = a.CustomerName
                     }).ToList();
         }
 
-        public Employee GetEmployee(Guid employeeId)
+        public Customer GetCustomer(Guid CustomerId)
         {
-            return _context.Employee
-                .Where(a => a.IsDelete == false)
-                .Include(e => e.AppUser)
-                .FirstOrDefault(a => a.EmployeeID == employeeId);
-        }
-
-        public Employee GetEmployeeByUserID(Guid userId)
-        {
-            return _context.Employee
-                .Where(a => a.IsDelete == false)
-                .Include(e => e.AppUser)
-                .FirstOrDefault(a => a.UserID == userId.ToString());
-        }
+            return _context.Customer
+            .Where(a => a.IsDelete == false)
+            .FirstOrDefault(a => a.CustomerID == CustomerId);
+        }       
 
 
-        public IEnumerable<Employee> GetEmployees(IEnumerable<Guid> employeeIds)
+        public IEnumerable<Customer> GetCustomers(IEnumerable<Guid> CustomerIds)
         {
-            return _context.Employee
+            return _context.Customer
                 .Where(a => a.IsDelete == false)
-                .Include(e => e.AppUser)
-                .Where(a => employeeIds.Contains(a.EmployeeID))
-                .OrderBy(a => a.FirstName)
+                .Where(a => CustomerIds.Contains(a.CustomerID))
+                .OrderBy(a => a.CustomerName)
                 .ToList();
         }
 
-        public void AddEmployee(Employee employee)
+        public void AddCustomer(Customer Customer)
         {
-            employee.EmployeeID = Guid.NewGuid();
-            _context.Employee.Add(employee);
+            Customer.CustomerID = Guid.NewGuid();
+            _context.Customer.Add(Customer);
         }
 
-        public void DeleteEmployee(Employee employee)
+        public void DeleteCustomer(Customer Customer)
         {
-            _context.Employee.Remove(employee);
+            _context.Customer.Remove(Customer);
         }
 
-        public void UpdateEmployee(Employee employee)
+        public void UpdateCustomer(Customer Customer)
         {
             // no code in this implementation
         }
 
-        public bool EmployeeExists(Guid employeeId)
+        public bool CustomerExists(Guid CustomerId)
         {
-            return _context.Employee.Any(a => a.EmployeeID == employeeId && a.IsDelete == false);
+            return _context.Customer.Any(a => a.CustomerID == CustomerId && a.IsDelete == false);
         }
-
-        public IEnumerable<LookUpItem> GetUsersWithoutEmployees()
-        {
-            return _userMgr.Users
-                .Where(u => !_context.Employee.Any(e => e.UserID == u.Id))
-                .Select(u => new LookUpItem() { ID = new Guid(u.Id), Name = u.UserName })
-                .ToList();
-        }
-
-        #endregion Employee
+        #endregion Customer
     }
 }
