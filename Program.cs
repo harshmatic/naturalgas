@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 
-namespace naturalgas
+namespace ESPL.NG
 {
     public class Program
     {
@@ -17,6 +17,7 @@ namespace naturalgas
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
+                .UseUrls("http://localhost:6060")
                 .Build();
 
             host.Run();
