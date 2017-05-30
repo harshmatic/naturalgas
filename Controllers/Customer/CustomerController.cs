@@ -52,71 +52,72 @@ namespace naturalgas.Controllers.Customers
             var customerFromRepo = _appRepository.GetCustomers(customerResourceParameters);
 
             var customer = Mapper.Map<IEnumerable<CustomerDto>>(customerFromRepo);
+            return Ok(customer);
+            // if (mediaType == "application/vnd.marvin.hateoas+json")
+            // {
+            //     var paginationMetadata = new
+            //     {
+            //         totalCount = customerFromRepo.TotalCount,
+            //         pageSize = customerFromRepo.PageSize,
+            //         currentPage = customerFromRepo.CurrentPage,
+            //         totalPages = customerFromRepo.TotalPages,
+            //     };
 
-            if (mediaType == "application/vnd.marvin.hateoas+json")
-            {
-                var paginationMetadata = new
-                {
-                    totalCount = customerFromRepo.TotalCount,
-                    pageSize = customerFromRepo.PageSize,
-                    currentPage = customerFromRepo.CurrentPage,
-                    totalPages = customerFromRepo.TotalPages,
-                };
+            //     Response.Headers.Add("X-Pagination",
+            //         Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            //     Response.Headers.Add("Access-Control-Expose-Headers", "ETag, X-Pagination");
 
-                Response.Headers.Add("X-Pagination",
-                    Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
-                Response.Headers.Add("Access-Control-Expose-Headers", "ETag, X-Pagination");
+            //     var links = CreateLinksForCustomer(customerResourceParameters,
+            //         customerFromRepo.HasNext, customerFromRepo.HasPrevious);
 
-                var links = CreateLinksForCustomer(customerResourceParameters,
-                    customerFromRepo.HasNext, customerFromRepo.HasPrevious);
+            //     var shapedcustomer = customer.ShapeData(customerResourceParameters.Fields);
 
-                var shapedcustomer = customer.ShapeData(customerResourceParameters.Fields);
+            //     var shapedcustomerWithLinks = shapedcustomer.Select(occType =>
+            //     {
+            //         var customerAsDictionary = occType as IDictionary<string, object>;
+            //         var customerLinks = CreateLinksForCustomer(
+            //             (Guid)customerAsDictionary["Id"], customerResourceParameters.Fields);
 
-                var shapedcustomerWithLinks = shapedcustomer.Select(occType =>
-                {
-                    var customerAsDictionary = occType as IDictionary<string, object>;
-                    var customerLinks = CreateLinksForCustomer(
-                        (Guid)customerAsDictionary["Id"], customerResourceParameters.Fields);
+            //         customerAsDictionary.Add("links", customerLinks);
 
-                    customerAsDictionary.Add("links", customerLinks);
+            //         return customerAsDictionary;
+            //     });
 
-                    return customerAsDictionary;
-                });
+            //     var linkedCollectionResource = new
+            //     {
+            //         value = shapedcustomerWithLinks,
+            //         links = links
+            //     };
 
-                var linkedCollectionResource = new
-                {
-                    value = shapedcustomerWithLinks,
-                    links = links
-                };
+            //     return Ok(linkedCollectionResource);
+            // }
+            // else
+            // {
+            //     var previousPageLink = customerFromRepo.HasPrevious ?
+            //         CreateCustomerResourceUri(customerResourceParameters,
+            //         ResourceUriType.PreviousPage) : null;
 
-                return Ok(linkedCollectionResource);
-            }
-            else
-            {
-                var previousPageLink = customerFromRepo.HasPrevious ?
-                    CreateCustomerResourceUri(customerResourceParameters,
-                    ResourceUriType.PreviousPage) : null;
+            //     var nextPageLink = customerFromRepo.HasNext ?
+            //         CreateCustomerResourceUri(customerResourceParameters,
+            //         ResourceUriType.NextPage) : null;
 
-                var nextPageLink = customerFromRepo.HasNext ?
-                    CreateCustomerResourceUri(customerResourceParameters,
-                    ResourceUriType.NextPage) : null;
+            //     var paginationMetadata = new
+            //     {
+            //         previousPageLink = previousPageLink,
+            //         nextPageLink = nextPageLink,
+            //         totalCount = customerFromRepo.TotalCount,
+            //         pageSize = customerFromRepo.PageSize,
+            //         currentPage = customerFromRepo.CurrentPage,
+            //         totalPages = customerFromRepo.TotalPages
+            //     };
 
-                var paginationMetadata = new
-                {
-                    previousPageLink = previousPageLink,
-                    nextPageLink = nextPageLink,
-                    totalCount = customerFromRepo.TotalCount,
-                    pageSize = customerFromRepo.PageSize,
-                    currentPage = customerFromRepo.CurrentPage,
-                    totalPages = customerFromRepo.TotalPages
-                };
+            //     Response.Headers.Add("X-Pagination",
+            //         Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            //     Response.Headers.Add("Access-Control-Expose-Headers", "ETag, X-Pagination");
 
-                Response.Headers.Add("X-Pagination",
-                    Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
-                Response.Headers.Add("Access-Control-Expose-Headers", "ETag, X-Pagination");
+            //     return Ok(customer.ShapeData(customerResourceParameters.Fields));
+            // }
 
-                return Ok(customer.ShapeData(customerResourceParameters.Fields));
-            }
         }
 
         [HttpGet("LookUp", Name = "GetCustomerAsLookUp")]

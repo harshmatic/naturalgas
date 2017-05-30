@@ -99,7 +99,8 @@ namespace ESPL.NG.Services
         #endregion AppUser
 
         #region Customer
-        public PagedList<Customer> GetCustomers(CustomerResourceParameters CustomersResourceParameters)
+
+        public List<Customer> GetCustomers(CustomerResourceParameters CustomersResourceParameters)
         {
             var collectionBeforePaging =
                 _context.Customer.Where(c => !c.IsDelete)
@@ -123,10 +124,38 @@ namespace ESPL.NG.Services
 
             }
 
-            return PagedList<Customer>.Create(collectionBeforePaging,
-                CustomersResourceParameters.PageNumber,
-                CustomersResourceParameters.PageSize);
+            return collectionBeforePaging.ToList();
         }
+
+        // public PagedList<Customer> GetCustomers(CustomerResourceParameters CustomersResourceParameters)
+        // {
+        //     var collectionBeforePaging =
+        //         _context.Customer.Where(c => !c.IsDelete)
+        //         .ApplySort(CustomersResourceParameters.OrderBy,
+        //         _propertyMappingService.GetPropertyMapping<CustomerDto, Customer>());
+
+        //     if (!string.IsNullOrEmpty(CustomersResourceParameters.SearchQuery))
+        //     {
+        //         // trim & ignore casing
+        //         var searchQueryForWhereClause = CustomersResourceParameters.SearchQuery
+        //             .Trim().ToLowerInvariant();
+
+        //         collectionBeforePaging = collectionBeforePaging
+        //             .Where(a => a.CustomerName.ToLowerInvariant().Contains(searchQueryForWhereClause)
+        //             || a.Mobile.ToLowerInvariant().Contains(searchQueryForWhereClause)
+        //             || a.Landline.ToLowerInvariant().Contains(searchQueryForWhereClause)
+        //             || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)
+        //             || a.CustomerEmail.ToLowerInvariant().Contains(searchQueryForWhereClause)
+        //             || a.DistributorName.ToLowerInvariant().Contains(searchQueryForWhereClause)
+        //             || a.DistributorContact.ToLowerInvariant().Contains(searchQueryForWhereClause));
+
+        //     }
+
+        //     return PagedList<Customer>.Create(collectionBeforePaging,
+        //         CustomersResourceParameters.PageNumber,
+        //         CustomersResourceParameters.PageSize);
+        // }
+
 
         public IEnumerable<LookUpItem> GetCustomerAsLookUp()
         {
