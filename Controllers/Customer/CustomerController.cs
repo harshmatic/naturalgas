@@ -10,6 +10,10 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using ESPL.NG.Helpers.Customer;
+using naturalgas.Helpers.Customer;
+using System.IO;
+using OfficeOpenXml;
+using Microsoft.AspNetCore.Hosting;
 
 namespace naturalgas.Controllers.Customers
 {
@@ -20,15 +24,18 @@ namespace naturalgas.Controllers.Customers
         private IUrlHelper _urlHelper;
         private IPropertyMappingService _propertyMappingService;
         private ITypeHelperService _typeHelperService;
+        private readonly IHostingEnvironment _hostingEnvironment;
         public CustomerController(IAppRepository appRepository,
            IUrlHelper urlHelper,
            IPropertyMappingService propertyMappingService,
-           ITypeHelperService typeHelperService)
+           ITypeHelperService typeHelperService,
+           IHostingEnvironment hostingEnvironment)
         {
             _appRepository = appRepository;
             _urlHelper = urlHelper;
             _propertyMappingService = propertyMappingService;
             _typeHelperService = typeHelperService;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet(Name = "GetCustomers")]
@@ -117,6 +124,63 @@ namespace naturalgas.Controllers.Customers
 
                 return Ok(customer.ShapeData(customerResourceParameters.Fields));
             }
+        }
+
+        [HttpGet(Name = "ExportToExcel")]
+        public IActionResult ExportToExcel(ExportCustomerResourceParameters customerResourceParameters)
+        {
+            if (!_propertyMappingService.ValidMappingExistsFor<CustomerDto, Customer>
+               (customerResourceParameters.OrderBy))
+            {
+                return BadRequest();
+            }
+
+            if (!_typeHelperService.TypeHasProperties<CustomerDto>
+                (customerResourceParameters.Fields))
+            {
+                return BadRequest();
+            }
+
+            var customers = _appRepository.GetCustomers(customerResourceParameters);
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            string sFileName = @"ExportedDocuments/CustomerReport.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            string localFilePath = Path.Combine(sWebRootFolder, sFileName);
+
+            FileInfo file = new FileInfo(localFilePath);
+            if (file.Exists)
+            {
+                file.Delete();
+                file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            }
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                // add a new worksheet to the empty workbook
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Customer");
+                //First add the headers
+                worksheet.Cells[1, 1].Value = "Name";
+                worksheet.Cells[1, 2].Value = "Mobile";
+                worksheet.Cells[1, 3].Value = "Landline";
+                worksheet.Cells[1, 4].Value = "CustomerEmail";
+
+                var index = 2;
+                customers.ForEach(customer =>
+                {
+                    worksheet.Cells[string.Format("A{0}", index)].Value = customer.CustomerName;
+                    worksheet.Cells[string.Format("B{0}", index)].Value = customer.Mobile;
+                    worksheet.Cells[string.Format("C{0}", index)].Value = customer.Landline;
+                    worksheet.Cells[string.Format("D{0}", index++)].Value = customer.CustomerEmail;
+                });
+
+                package.Save();
+            }
+
+            FileStream fs = new FileStream(localFilePath, FileMode.Open);
+            FileStreamResult fileStreamResult = new FileStreamResult(fs, "application/vnd.ms-excel");
+            fileStreamResult.FileDownloadName = "Customer Report.xlsx";
+            return fileStreamResult;
+            //return Ok(customerResourceParameters);
         }
 
         [HttpGet("LookUp", Name = "GetCustomerAsLookUp")]
