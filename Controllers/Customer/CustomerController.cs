@@ -10,6 +10,12 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using ESPL.NG.Helpers.Customer;
+using System.IO;
+using OfficeOpenXml;
+using Microsoft.AspNetCore.Hosting;
+using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.NodeServices;
 
 namespace naturalgas.Controllers.Customers
 {
@@ -20,15 +26,18 @@ namespace naturalgas.Controllers.Customers
         private IUrlHelper _urlHelper;
         private IPropertyMappingService _propertyMappingService;
         private ITypeHelperService _typeHelperService;
+        private readonly IHostingEnvironment _hostingEnvironment;
         public CustomerController(IAppRepository appRepository,
            IUrlHelper urlHelper,
            IPropertyMappingService propertyMappingService,
-           ITypeHelperService typeHelperService)
+           ITypeHelperService typeHelperService,
+           IHostingEnvironment hostingEnvironment)
         {
             _appRepository = appRepository;
             _urlHelper = urlHelper;
             _propertyMappingService = propertyMappingService;
             _typeHelperService = typeHelperService;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet(Name = "GetCustomers")]
@@ -293,6 +302,61 @@ namespace naturalgas.Controllers.Customers
             return NoContent();
         }
 
+        [HttpGet("ExcelReport", Name = "GetCustomersExcel")]
+        public IActionResult GetCustomersExcel(CustomerResourceParameters customerResourceParameters,
+            [FromHeader(Name = "Accept")] string mediaType)
+        {
+            if (!_propertyMappingService.ValidMappingExistsFor<CustomerDto, Customer>
+               (customerResourceParameters.OrderBy))
+            {
+                return BadRequest();
+            }
+
+            if (!_typeHelperService.TypeHasProperties<CustomerDto>
+                (customerResourceParameters.Fields))
+            {
+                return BadRequest();
+            }
+
+            var customerFromRepo = _appRepository.GetAllCustomers(customerResourceParameters);
+
+            var customers = Mapper.Map<IEnumerable<CustomerDto>>(customerFromRepo);
+
+            var excelFile = GenerateExcel(customers.ToList());
+
+            return excelFile;
+        }
+
+        [HttpGet("PdfReport", Name = "GetCustomersPdf")]
+        public async Task<IActionResult> GetCustomersPdf(CustomerResourceParameters customerResourceParameters,
+            [FromServices] INodeServices nodeServices)
+        {
+            if (!_propertyMappingService.ValidMappingExistsFor<CustomerDto, Customer>
+               (customerResourceParameters.OrderBy))
+            {
+                return BadRequest();
+            }
+
+            if (!_typeHelperService.TypeHasProperties<CustomerDto>
+                (customerResourceParameters.Fields))
+            {
+                return BadRequest();
+            }
+
+            var customerFromRepo = _appRepository.GetAllCustomers(customerResourceParameters);
+
+            var customers = Mapper.Map<IEnumerable<CustomerDto>>(customerFromRepo);
+            
+            var htmlContent = CreateHTMLTable(customers.ToList());
+            var result = await nodeServices.InvokeAsync<byte[]>("./pdfReport", htmlContent);
+            HttpContext.Response.ContentType = "application/pdf";
+            string filename = @"report.pdf";
+            HttpContext.Response.Headers.Add("x-filename", filename);
+            HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "x-filename");
+            HttpContext.Response.Body.Write(result, 0, result.Length);
+            return new ContentResult();
+        }
+
         [HttpOptions]
         public IActionResult GetCustomerOptions()
         {
@@ -300,6 +364,99 @@ namespace naturalgas.Controllers.Customers
             return Ok();
         }
 
+        private FileStreamResult GenerateExcel(List<CustomerDto> customerList)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            string sFileName = @"ExportedDocuments/CustomerList.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            string localFilePath = Path.Combine(sWebRootFolder, sFileName);
+            FileInfo file = new FileInfo(localFilePath);
+            if (file.Exists)
+            {
+                file.Delete();
+                file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            }
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                // add a new worksheet to the empty workbook
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Customers");
+
+                PropertyInfo[] allProperties = (new Customer()).GetType().GetProperties();
+                int count = 1, iterCount = 2;
+                foreach (PropertyInfo property in allProperties)
+                {
+                    worksheet.Cells[1, count].Value = property.Name;
+                    count++;
+                }
+                foreach (CustomerDto customer in customerList)
+                {
+                    count = 1;
+                    foreach (PropertyInfo property in allProperties)
+                    {
+                        var obj = customer.GetType().GetProperty(property.Name);
+                        if (obj != null)
+                        {
+                            string columnName = GetExcelColumnName(count);
+                            worksheet.Cells[columnName + iterCount].Value = obj.GetValue(customer, null);
+                            count++;
+                        }
+                    }
+                    iterCount++;
+                }
+                package.Save(); //Save the workbook.
+            }
+            FileStream fs = new FileStream(localFilePath, FileMode.Open);
+            FileStreamResult fileStreamResult = new FileStreamResult(fs, "application/vnd.ms-excel");
+            fileStreamResult.FileDownloadName = "Customers List.xlsx";
+            return fileStreamResult;
+        }
+
+        private string CreateHTMLTable(List<CustomerDto> customerList)
+        {
+            PropertyInfo[] allProperties = (new Customer()).GetType().GetProperties();
+            int count = 1, iterCount = 2;
+            string table="<table><thead><tr>";
+            foreach (PropertyInfo property in allProperties)
+            {
+                table+="<th>"+ property.Name+"</th>";
+                count++;
+            }
+            table+="</tr></thead><tbody>";
+            foreach (CustomerDto customer in customerList)
+            {
+                table+="<tr>";
+                count = 1;
+                foreach (PropertyInfo property in allProperties)
+                {
+                    var obj = customer.GetType().GetProperty(property.Name);
+                    if (obj != null)
+                    {
+                        table+="<td>"+ obj.GetValue(customer, null)+"</td>";
+                        count++;
+                    }
+                }
+                table+="</tr>";
+                iterCount++;
+            }
+            table+="</tbody></table>";
+            return table;
+        }
+
+        private string GetExcelColumnName(int columnNumber)
+        {
+            int dividend = columnNumber;
+            string columnName = String.Empty;
+            int modulo;
+
+            while (dividend > 0)
+            {
+                modulo = (dividend - 1) % 26;
+                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
+                dividend = (int)((dividend - modulo) / 26);
+            }
+
+            return columnName;
+        }
         private string CreateCustomerResourceUri(
             CustomerResourceParameters customerResourceParameters,
             ResourceUriType type)

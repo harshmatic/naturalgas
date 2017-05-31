@@ -36,7 +36,7 @@ namespace ESPL.NG.Services
         void UpdateCustomer(Customer Customer);
         bool CustomerExists(Guid authorId);
         IEnumerable<LookUpItem> GetCustomerAsLookUp();
-
+        IEnumerable<Customer> GetAllCustomers(CustomerResourceParameters CustomersResourceParameters);
 
         #endregion
     }
