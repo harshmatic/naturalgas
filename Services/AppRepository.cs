@@ -187,31 +187,6 @@ namespace ESPL.NG.Services
                 .ToList();
         }
 
-        public IEnumerable<Customer> GetAllCustomers(CustomerResourceParameters CustomersResourceParameters)
-        {
-            var collectionBeforePaging =
-                _context.Customer.Where(c=>!c.IsDelete)
-                .ApplySort(CustomersResourceParameters.OrderBy,
-                _propertyMappingService.GetPropertyMapping<CustomerDto, Customer>());
-
-            if (!string.IsNullOrEmpty(CustomersResourceParameters.SearchQuery))
-            {
-                // trim & ignore casing
-                var searchQueryForWhereClause = CustomersResourceParameters.SearchQuery
-                    .Trim().ToLowerInvariant();
-
-                collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.CustomerName.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.Mobile.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.Landline.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)                    
-                    || a.CustomerEmail.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.DistributorName.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.DistributorContact.ToLowerInvariant().Contains(searchQueryForWhereClause));
-            }
-            return collectionBeforePaging;
-        }
-
         public void AddCustomer(Customer Customer)
         {
             Customer.CustomerID = Guid.NewGuid();

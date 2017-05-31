@@ -38,8 +38,7 @@ namespace ESPL.NG.Services
         void DeleteCustomer(Customer customer);
         void UpdateCustomer(Customer customer);
         bool CustomerExists(Guid authorId);
-        IEnumerable<LookUpItem> GetCustomerAsLookUp();
-        IEnumerable<Customer> GetAllCustomers(CustomerResourceParameters CustomersResourceParameters);
+        IEnumerable<LookUpItem> GetCustomerAsLookUp();        
 
         #endregion
     }

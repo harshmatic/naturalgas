@@ -129,7 +129,7 @@ namespace naturalgas.Controllers.Customers
             }
         }
 
-        [HttpGet(Name = "ExportToExcel")]
+        [HttpGet("ExportToExcel", Name = "ExportToExcel")]
         public IActionResult ExportToExcel(ExportCustomerResourceParameters customerResourceParameters)
         {
             if (!_propertyMappingService.ValidMappingExistsFor<CustomerDto, Customer>
@@ -162,18 +162,44 @@ namespace naturalgas.Controllers.Customers
                 // add a new worksheet to the empty workbook
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Customer");
                 //First add the headers
-                worksheet.Cells[1, 1].Value = "Name";
-                worksheet.Cells[1, 2].Value = "Mobile";
-                worksheet.Cells[1, 3].Value = "Landline";
-                worksheet.Cells[1, 4].Value = "CustomerEmail";
+                worksheet.Cells[1, 1].Value = "Customer ID";
+                worksheet.Cells[1, 2].Value = "Name";
+                worksheet.Cells[1, 3].Value = "Mobile";
+                worksheet.Cells[1, 4].Value = "Landline";
+                worksheet.Cells[1, 5].Value = "Customer Email";
+                worksheet.Cells[1, 6].Value = "Date Of Birth";
+                worksheet.Cells[1, 7].Value = "Customer Address";
+                worksheet.Cells[1, 8].Value = "Status";
+                worksheet.Cells[1, 9].Value = "Distributor Name";
+                worksheet.Cells[1, 10].Value = "Distributor Address";
+                worksheet.Cells[1, 11].Value = "Distributor Contact";
+                worksheet.Cells[1, 12].Value = "Created On";
+                worksheet.Cells[1, 13].Value = "Created By";
+                worksheet.Cells[1, 14].Value = "Updated On";
+                worksheet.Cells[1, 15].Value = "Updated By";
+                worksheet.Cells[1, 16].Value = "Created By Name";
+                worksheet.Cells[1, 17].Value = "Updated By Name";
 
                 var index = 2;
                 customers.ForEach(customer =>
                 {
-                    worksheet.Cells[string.Format("A{0}", index)].Value = customer.CustomerName;
-                    worksheet.Cells[string.Format("B{0}", index)].Value = customer.Mobile;
-                    worksheet.Cells[string.Format("C{0}", index)].Value = customer.Landline;
-                    worksheet.Cells[string.Format("D{0}", index++)].Value = customer.CustomerEmail;
+                    worksheet.Cells[string.Format("A{0}", index)].Value = customer.CustomerID;
+                    worksheet.Cells[string.Format("B{0}", index)].Value = customer.CustomerName;
+                    worksheet.Cells[string.Format("C{0}", index)].Value = customer.Mobile;
+                    worksheet.Cells[string.Format("D{0}", index)].Value = customer.Landline;
+                    worksheet.Cells[string.Format("E{0}", index)].Value = customer.CustomerEmail;
+                    worksheet.Cells[string.Format("F{0}", index)].Value = customer.DateOfBirth;
+                    worksheet.Cells[string.Format("G{0}", index)].Value = customer.CustomerAddress;
+                    worksheet.Cells[string.Format("H{0}", index)].Value = customer.Status;
+                    worksheet.Cells[string.Format("I{0}", index)].Value = customer.DistributorName;
+                    worksheet.Cells[string.Format("J{0}", index)].Value = customer.DistributorAddress;
+                    worksheet.Cells[string.Format("K{0}", index)].Value = customer.DistributorContact;
+                    worksheet.Cells[string.Format("L{0}", index)].Value = customer.CreatedOn;
+                    worksheet.Cells[string.Format("M{0}", index)].Value = customer.CreatedBy;
+                    worksheet.Cells[string.Format("N{0}", index)].Value = customer.UpdatedOn;
+                    worksheet.Cells[string.Format("O{0}", index)].Value = customer.UpdatedBy;
+                    worksheet.Cells[string.Format("P{0}", index)].Value = customer.CreatedByName;
+                    worksheet.Cells[string.Format("Q{0}", index++)].Value = customer.UpdatedByName;
                 });
 
                 package.Save();
@@ -184,6 +210,34 @@ namespace naturalgas.Controllers.Customers
             fileStreamResult.FileDownloadName = "Customer Report.xlsx";
             return fileStreamResult;
             //return Ok(customerResourceParameters);
+        }
+
+        [HttpGet("ExportToPdf", Name = "ExportToPdf")]
+        public async Task<IActionResult> ExportToPdf(ExportCustomerResourceParameters customerResourceParameters, [FromServices] INodeServices nodeServices)
+        {
+            if (!_propertyMappingService.ValidMappingExistsFor<CustomerDto, Customer>
+               (customerResourceParameters.OrderBy))
+            {
+                return BadRequest();
+            }
+
+            if (!_typeHelperService.TypeHasProperties<CustomerDto>
+                (customerResourceParameters.Fields))
+            {
+                return BadRequest();
+            }
+
+            var customers = _appRepository.GetCustomers(customerResourceParameters);
+
+            var htmlContent = CreateHTMLTable(customers);
+            var result = await nodeServices.InvokeAsync<byte[]>("./pdfReport", htmlContent);
+            HttpContext.Response.ContentType = "application/pdf";
+            string filename = @"report.pdf";
+            HttpContext.Response.Headers.Add("x-filename", filename);
+            HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "x-filename");
+            HttpContext.Response.Body.Write(result, 0, result.Length);
+            return new ContentResult();
+
         }
 
         [HttpGet("LookUp", Name = "GetCustomerAsLookUp")]
@@ -360,61 +414,6 @@ namespace naturalgas.Controllers.Customers
             return NoContent();
         }
 
-        [HttpGet("ExcelReport", Name = "GetCustomersExcel")]
-        public IActionResult GetCustomersExcel(CustomerResourceParameters customerResourceParameters,
-            [FromHeader(Name = "Accept")] string mediaType)
-        {
-            if (!_propertyMappingService.ValidMappingExistsFor<CustomerDto, Customer>
-               (customerResourceParameters.OrderBy))
-            {
-                return BadRequest();
-            }
-
-            if (!_typeHelperService.TypeHasProperties<CustomerDto>
-                (customerResourceParameters.Fields))
-            {
-                return BadRequest();
-            }
-
-            var customerFromRepo = _appRepository.GetAllCustomers(customerResourceParameters);
-
-            var customers = Mapper.Map<IEnumerable<CustomerDto>>(customerFromRepo);
-
-            var excelFile = GenerateExcel(customers.ToList());
-
-            return excelFile;
-        }
-
-        [HttpGet("PdfReport", Name = "GetCustomersPdf")]
-        public async Task<IActionResult> GetCustomersPdf(CustomerResourceParameters customerResourceParameters,
-            [FromServices] INodeServices nodeServices)
-        {
-            if (!_propertyMappingService.ValidMappingExistsFor<CustomerDto, Customer>
-               (customerResourceParameters.OrderBy))
-            {
-                return BadRequest();
-            }
-
-            if (!_typeHelperService.TypeHasProperties<CustomerDto>
-                (customerResourceParameters.Fields))
-            {
-                return BadRequest();
-            }
-
-            var customerFromRepo = _appRepository.GetAllCustomers(customerResourceParameters);
-
-            var customers = Mapper.Map<IEnumerable<CustomerDto>>(customerFromRepo);
-            
-            var htmlContent = CreateHTMLTable(customers.ToList());
-            var result = await nodeServices.InvokeAsync<byte[]>("./pdfReport", htmlContent);
-            HttpContext.Response.ContentType = "application/pdf";
-            string filename = @"report.pdf";
-            HttpContext.Response.Headers.Add("x-filename", filename);
-            HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "x-filename");
-            HttpContext.Response.Body.Write(result, 0, result.Length);
-            return new ContentResult();
-        }
-
         [HttpOptions]
         public IActionResult GetCustomerOptions()
         {
@@ -422,99 +421,48 @@ namespace naturalgas.Controllers.Customers
             return Ok();
         }
 
-        private FileStreamResult GenerateExcel(List<CustomerDto> customerList)
-        {
-            string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            string sFileName = @"ExportedDocuments/CustomerList.xlsx";
-            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
-            string localFilePath = Path.Combine(sWebRootFolder, sFileName);
-            FileInfo file = new FileInfo(localFilePath);
-            if (file.Exists)
-            {
-                file.Delete();
-                file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
-            }
-            using (ExcelPackage package = new ExcelPackage(file))
-            {
-                // add a new worksheet to the empty workbook
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Customers");
-
-                PropertyInfo[] allProperties = (new Customer()).GetType().GetProperties();
-                int count = 1, iterCount = 2;
-                foreach (PropertyInfo property in allProperties)
-                {
-                    worksheet.Cells[1, count].Value = property.Name;
-                    count++;
-                }
-                foreach (CustomerDto customer in customerList)
-                {
-                    count = 1;
-                    foreach (PropertyInfo property in allProperties)
-                    {
-                        var obj = customer.GetType().GetProperty(property.Name);
-                        if (obj != null)
-                        {
-                            string columnName = GetExcelColumnName(count);
-                            worksheet.Cells[columnName + iterCount].Value = obj.GetValue(customer, null);
-                            count++;
-                        }
-                    }
-                    iterCount++;
-                }
-                package.Save(); //Save the workbook.
-            }
-            FileStream fs = new FileStream(localFilePath, FileMode.Open);
-            FileStreamResult fileStreamResult = new FileStreamResult(fs, "application/vnd.ms-excel");
-            fileStreamResult.FileDownloadName = "Customers List.xlsx";
-            return fileStreamResult;
-        }
-
-        private string CreateHTMLTable(List<CustomerDto> customerList)
+        private string CreateHTMLTable(PagedList<Customer> customerList)
         {
             PropertyInfo[] allProperties = (new Customer()).GetType().GetProperties();
             int count = 1, iterCount = 2;
-            string table="<table><thead><tr>";
-            foreach (PropertyInfo property in allProperties)
+            string table = "<table  style='border:1px solid black;border-collapse:collapse;'><thead><tr>";
+
+            table += "<th style='border:1px solid black;'>CustomerID  </th>";
+            table += "<th style='border:1px solid black;'>CustomerName</th>";
+            table += "<th style='border:1px solid black;'>Mobile</th>";
+            table += "<th style='border:1px solid black;'>Landline</th>";
+            table += "<th style='border:1px solid black;'>CustomerEmail</th>";
+            table += "<th style='border:1px solid black;'>DateOfBirth</th>";
+            table += "<th style='border:1px solid black;'>CustomerAddress</th>";
+            table += "<th style='border:1px solid black;'>Status</th>";
+            table += "<th style='border:1px solid black;'>DistributorName</th>";
+            table += "<th style='border:1px solid black;'>DistributorAddress</th>";
+            table += "<th style='border:1px solid black;'>DistributorContact</th>";
+
+
+            table += "</tr></thead><tbody>";
+            foreach (Customer customer in customerList)
             {
-                table+="<th>"+ property.Name+"</th>";
-                count++;
-            }
-            table+="</tr></thead><tbody>";
-            foreach (CustomerDto customer in customerList)
-            {
-                table+="<tr>";
-                count = 1;
-                foreach (PropertyInfo property in allProperties)
-                {
-                    var obj = customer.GetType().GetProperty(property.Name);
-                    if (obj != null)
-                    {
-                        table+="<td>"+ obj.GetValue(customer, null)+"</td>";
-                        count++;
-                    }
-                }
-                table+="</tr>";
+                table += "<tr>";
+                table += "<td style='border:1px solid black;'>" + customer.CustomerID + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.CustomerName + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.Mobile + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.Landline + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.CustomerEmail + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.DateOfBirth + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.CustomerAddress + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.Status + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.DistributorName + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.DistributorAddress + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.DistributorContact + "</td>";
+
+                table += "</tr>";
                 iterCount++;
             }
-            table+="</tbody></table>";
+            table += "</tbody></table>";
             return table;
         }
 
-        private string GetExcelColumnName(int columnNumber)
-        {
-            int dividend = columnNumber;
-            string columnName = String.Empty;
-            int modulo;
-
-            while (dividend > 0)
-            {
-                modulo = (dividend - 1) % 26;
-                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
-                dividend = (int)((dividend - modulo) / 26);
-            }
-
-            return columnName;
-        }
         private string CreateCustomerResourceUri(
             CustomerResourceParameters customerResourceParameters,
             ResourceUriType type)
