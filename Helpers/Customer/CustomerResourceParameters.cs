@@ -5,7 +5,7 @@ namespace ESPL.NG.Helpers.Customer
 {
     public class CustomerResourceParameters : BaseResourceParameters
     {
-        public string OrderBy { get; set; } = "CustomerName";
+        public string OrderBy { get; set; } = "DateOfBirth";
         
     }
 }

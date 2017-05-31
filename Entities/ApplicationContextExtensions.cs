@@ -8,30 +8,44 @@ namespace ESPL.NG.Entities
     {
         public static void EnsureSeedDataForContext(this ApplicationContext context)
         {
-            context.Customer.RemoveRange(context.Customer);
-            context.SaveChanges();
-            UpdateCustomer(context);
+            // context.Customer.RemoveRange(context.Customer);
+            // context.SaveChanges();
+            // UpdateCustomer(context);
         }
 
         private static void UpdateCustomer(ApplicationContext context)
         {
-            var customer = new List<Customer>(){
-                new Customer{
-                    CustomerID=new Guid("56c385ae-ce46-41d4-b7fe-08df9aef1111"),
-                    CustomerName="John Doe",
-                    Mobile = "9876543210",
-                    Landline="020548789444",
-                    CustomerEmail="john.doe@gmail.com",
-                    DateOfBirth=DateTime.Now.AddYears(-30),
-                    CustomerAddress="Westlands Commercial Centre, Ring Road",
-                    Status=true,
-                    DistributorName="Natural Gas Agency",
-                    DistributorAddress="Westlands Commercial Centre, DP Road",
-                    DistributorContact="9898989898"
-                }
-            };
-            context.Customer.AddRange(customer);
-            context.SaveChanges();
+            
+            int k=1;
+            for (int j = 0; j < 10; j++)
+            {
+                
+                var customers = new List<Customer>();
+                for (int i=1;i <= 1000; i++)
+                {
+                    var cust = new Customer
+                    {
+                        CustomerID = Guid.NewGuid(),
+                        CustomerName = "John Doe" + k.ToString(),
+                        Mobile = "9876543210",
+                        Landline = "020548789444",
+                        CustomerEmail = "john.doe" + k.ToString() + "@gmail.com",
+                        DateOfBirth = DateTime.Now.AddYears(-30).AddDays(k),
+                        CustomerAddress = "Westlands Commercial Centre, Ring Road",
+                        Status = true,
+                        DistributorName = "Natural Gas Agency",
+                        DistributorAddress = "Westlands Commercial Centre, DP Road",
+                        DistributorContact = "9898989898"
+                    };
+                    customers.Add(cust);
+                    k++;
+                };
+                context.Customer.AddRange(customers);
+                context.SaveChanges();
+                
+                
+            }
+
         }
         // private static void UpdateEmployee(ApplicationContext context)
         // {
