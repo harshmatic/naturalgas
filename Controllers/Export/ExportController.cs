@@ -41,12 +41,13 @@ namespace naturalgas.Controllers.Export
 
         [HttpGet]
         [Route("DemoExcel")]
-        public string DemoExcel()
+        public IActionResult DemoExcel()
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
             string sFileName = @"ExportedDocuments/demo.xlsx";
             string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
-            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            string localFilePath = Path.Combine(sWebRootFolder, sFileName);
+            FileInfo file = new FileInfo(localFilePath);
             if (file.Exists)
             {
                 file.Delete();
@@ -80,7 +81,10 @@ namespace naturalgas.Controllers.Export
 
                 package.Save(); //Save the workbook.
             }
-            return URL;
+            FileStream fs = new FileStream(localFilePath, FileMode.Open);
+            FileStreamResult fileStreamResult = new FileStreamResult(fs, "application/vnd.ms-excel");
+            fileStreamResult.FileDownloadName = "Excel Report.xlsx";
+            return fileStreamResult;
         }
 
         [HttpGet]
