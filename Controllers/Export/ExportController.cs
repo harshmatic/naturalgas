@@ -87,9 +87,10 @@ namespace naturalgas.Controllers.Export
         [Route("DemoPDF")]
         public async Task<IActionResult> DemoPDF([FromServices] INodeServices nodeServices)
         {
-            var result = await nodeServices.InvokeAsync<byte[]>("./pdf");
+            var htmlContent = "<h1>Hello From Controller</h1>";
+            var result = await nodeServices.InvokeAsync<byte[]>("./pdfReport", htmlContent);
             HttpContext.Response.ContentType = "application/pdf";
-            string filename = @"ExportedDocuments/report.pdf";
+            string filename = @"report.pdf";
             HttpContext.Response.Headers.Add("x-filename", filename);
             HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "x-filename");
             HttpContext.Response.Body.Write(result, 0, result.Length);
