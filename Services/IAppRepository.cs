@@ -28,7 +28,7 @@ namespace ESPL.NG.Services
         #endregion AppUser
 
         #region Customer
-        List<Customer> GetCustomers(CustomerResourceParameters CustomersResourceParameters);
+        PagedList<Customer> GetCustomers(CustomerResourceParameters CustomersResourceParameters);
         Customer GetCustomer(Guid CustomerId);
         IEnumerable<Customer> GetCustomers(IEnumerable<Guid> CustomerIds);
         void AddCustomer(Customer Customer);
