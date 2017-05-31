@@ -102,7 +102,7 @@ namespace ESPL.NG.Services
         public PagedList<Customer> GetCustomers(CustomerResourceParameters CustomersResourceParameters)
         {
             var collectionBeforePaging =
-                _context.Customer                
+                _context.Customer.Where(c=>!c.IsDelete)
                 .ApplySort(CustomersResourceParameters.OrderBy,
                 _propertyMappingService.GetPropertyMapping<CustomerDto, Customer>());
 
