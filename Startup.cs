@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using ESPL.NG.Helpers.Core;
 using System;
 using System.Reflection;
-
+using MySQL.Data.Entity.Extensions;
 namespace ESPL.NG
 {
     public class Startup
@@ -55,7 +55,7 @@ namespace ESPL.NG
             // appSettings (note: use this during development; in a production environment,
             // it's better to store the connection string in an environment variable)
             var connectionString = Configuration["connectionStrings:naturalGasDBConnectionString"];
-            services.AddDbContext<Entities.ApplicationContext>(o => o.UseSqlServer(connectionString));
+            services.AddDbContext<Entities.ApplicationContext>(o => o.UseMySQL(connectionString));
             services.AddTransient<IdentityInitializer>();
             services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<Entities.ApplicationContext>();
             services.Configure<IdentityOptions>(config =>

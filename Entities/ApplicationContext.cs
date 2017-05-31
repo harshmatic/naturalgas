@@ -11,7 +11,7 @@ namespace ESPL.NG.Entities
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
-            Database.Migrate();
+            //Database.Migrate();
         }
         public DbSet<Customer> Customer { get; set; }
         protected override void OnModelCreating(ModelBuilder modelbuilder)
