@@ -8,6 +8,8 @@ using ESPL.NG.Helpers.Customer;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ESPL.NG.Models;
 using naturalgas.Entities.Core;
+using naturalgas.Helpers.Core;
+using naturalgas.Helpers.Customer;
 
 namespace ESPL.NG.Services
 {
@@ -28,12 +30,13 @@ namespace ESPL.NG.Services
         #endregion AppUser
 
         #region Customer
-        PagedList<Customer> GetCustomers(CustomerResourceParameters CustomersResourceParameters);
-        Customer GetCustomer(Guid CustomerId);
-        IEnumerable<Customer> GetCustomers(IEnumerable<Guid> CustomerIds);
-        void AddCustomer(Customer Customer);
-        void DeleteCustomer(Customer Customer);
-        void UpdateCustomer(Customer Customer);
+        PagedList<Customer> GetCustomers(CustomerResourceParameters customersResourceParameters);
+        PagedList<Customer> GetCustomers(ExportCustomerResourceParameters customersResourceParameters);
+        Customer GetCustomer(Guid customerId);
+        IEnumerable<Customer> GetCustomers(IEnumerable<Guid> customerIds);
+        void AddCustomer(Customer customer);
+        void DeleteCustomer(Customer customer);
+        void UpdateCustomer(Customer customer);
         bool CustomerExists(Guid authorId);
         IEnumerable<LookUpItem> GetCustomerAsLookUp();
         IEnumerable<Customer> GetAllCustomers(CustomerResourceParameters CustomersResourceParameters);

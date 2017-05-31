@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using naturalgas.Entities.Core;
+using naturalgas.Helpers.Core;
+using naturalgas.Helpers.Customer;
 
 namespace ESPL.NG.Services
 {
@@ -100,6 +102,35 @@ namespace ESPL.NG.Services
 
         #region Customer
         public PagedList<Customer> GetCustomers(CustomerResourceParameters CustomersResourceParameters)
+        {
+            var collectionBeforePaging =
+                _context.Customer.Where(c=>!c.IsDelete)
+                .ApplySort(CustomersResourceParameters.OrderBy,
+                _propertyMappingService.GetPropertyMapping<CustomerDto, Customer>());
+
+            if (!string.IsNullOrEmpty(CustomersResourceParameters.SearchQuery))
+            {
+                // trim & ignore casing
+                var searchQueryForWhereClause = CustomersResourceParameters.SearchQuery
+                    .Trim().ToLowerInvariant();
+
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.CustomerName.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.Mobile.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.Landline.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)                    
+                    || a.CustomerEmail.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.DistributorName.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.DistributorContact.ToLowerInvariant().Contains(searchQueryForWhereClause));
+
+            }
+
+            return PagedList<Customer>.Create(collectionBeforePaging,
+                CustomersResourceParameters.PageNumber,
+                CustomersResourceParameters.PageSize);
+        }
+
+        public PagedList<Customer> GetCustomers(ExportCustomerResourceParameters CustomersResourceParameters)
         {
             var collectionBeforePaging =
                 _context.Customer.Where(c=>!c.IsDelete)
