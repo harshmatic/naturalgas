@@ -131,6 +131,8 @@ namespace ESPL.NG
                 options.AddPolicy("IsSuperAdmin", policy => policy.RequireClaim("IsSuperAdmin"));
             });
 
+            services.AddNodeServices();
+
             // register the repository
             services.AddScoped<IAppRepository, AppRepository>();
 
