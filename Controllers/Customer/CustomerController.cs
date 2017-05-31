@@ -173,12 +173,6 @@ namespace naturalgas.Controllers.Customers
                 worksheet.Cells[1, 9].Value = "Distributor Name";
                 worksheet.Cells[1, 10].Value = "Distributor Address";
                 worksheet.Cells[1, 11].Value = "Distributor Contact";
-                worksheet.Cells[1, 12].Value = "Created On";
-                worksheet.Cells[1, 13].Value = "Created By";
-                worksheet.Cells[1, 14].Value = "Updated On";
-                worksheet.Cells[1, 15].Value = "Updated By";
-                worksheet.Cells[1, 16].Value = "Created By Name";
-                worksheet.Cells[1, 17].Value = "Updated By Name";
 
                 var index = 2;
                 customers.ForEach(customer =>
@@ -193,13 +187,7 @@ namespace naturalgas.Controllers.Customers
                     worksheet.Cells[string.Format("H{0}", index)].Value = customer.Status;
                     worksheet.Cells[string.Format("I{0}", index)].Value = customer.DistributorName;
                     worksheet.Cells[string.Format("J{0}", index)].Value = customer.DistributorAddress;
-                    worksheet.Cells[string.Format("K{0}", index)].Value = customer.DistributorContact;
-                    worksheet.Cells[string.Format("L{0}", index)].Value = customer.CreatedOn;
-                    worksheet.Cells[string.Format("M{0}", index)].Value = customer.CreatedBy;
-                    worksheet.Cells[string.Format("N{0}", index)].Value = customer.UpdatedOn;
-                    worksheet.Cells[string.Format("O{0}", index)].Value = customer.UpdatedBy;
-                    worksheet.Cells[string.Format("P{0}", index)].Value = customer.CreatedByName;
-                    worksheet.Cells[string.Format("Q{0}", index++)].Value = customer.UpdatedByName;
+                    worksheet.Cells[string.Format("K{0}", index++)].Value = customer.DistributorContact;
                 });
 
                 package.Save();
@@ -286,31 +274,41 @@ namespace naturalgas.Controllers.Customers
             {
                 return BadRequest();
             }
-
-            var customerEntity = Mapper.Map<Customer>(customer);
-
-            SetCreationUserData(customerEntity);
-
-            _appRepository.AddCustomer(customerEntity);
-
-            if (!_appRepository.Save())
+            if (ModelState.IsValid)
             {
-                throw new Exception("Creating an customer failed on save.");
-                // return StatusCode(500, "A problem happened with handling your request.");
+                var customerEntity = Mapper.Map<Customer>(customer);
+
+                SetCreationUserData(customerEntity);
+
+                _appRepository.AddCustomer(customerEntity);
+
+                if (!_appRepository.Save())
+                {
+                    throw new Exception("Creating an customer failed on save.");
+                    // return StatusCode(500, "A problem happened with handling your request.");
+                }
+
+                var customerToReturn = Mapper.Map<CustomerDto>(customerEntity);
+
+                var links = CreateLinksForCustomer(customerToReturn.CustomerID, null);
+
+                var linkedResourceToReturn = customerToReturn.ShapeData(null)
+                    as IDictionary<string, object>;
+
+                linkedResourceToReturn.Add("links", links);
+
+                return CreatedAtRoute("GetCustomer",
+                    new { id = linkedResourceToReturn["CustomerID"] },
+                    linkedResourceToReturn);
+
             }
-
-            var customerToReturn = Mapper.Map<CustomerDto>(customerEntity);
-
-            var links = CreateLinksForCustomer(customerToReturn.CustomerID, null);
-
-            var linkedResourceToReturn = customerToReturn.ShapeData(null)
-                as IDictionary<string, object>;
-
-            linkedResourceToReturn.Add("links", links);
-
-            return CreatedAtRoute("GetCustomer",
-                new { id = linkedResourceToReturn["CustomerID"] },
-                linkedResourceToReturn);
+            else
+            {
+                var errors = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
+                return BadRequest(errors);
+            }
         }
 
         [HttpPost("{id}")]
@@ -354,22 +352,32 @@ namespace naturalgas.Controllers.Customers
             {
                 return BadRequest();
             }
-            var customerFromRepo = _appRepository.GetCustomer(id);
-
-            if (customerFromRepo == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
-            }
-            SetItemHistoryData(customer, customerFromRepo);
+                var customerFromRepo = _appRepository.GetCustomer(id);
 
-            Mapper.Map(customer, customerFromRepo);
-            _appRepository.UpdateCustomer(customerFromRepo);
-            if (!_appRepository.Save())
-            {
-                throw new Exception("Updating an customer failed on save.");
-                // return StatusCode(500, "A problem happened with handling your request.");
+                if (customerFromRepo == null)
+                {
+                    return NotFound();
+                }
+                SetItemHistoryData(customer, customerFromRepo);
+
+                Mapper.Map(customer, customerFromRepo);
+                _appRepository.UpdateCustomer(customerFromRepo);
+                if (!_appRepository.Save())
+                {
+                    throw new Exception("Updating an customer failed on save.");
+                    // return StatusCode(500, "A problem happened with handling your request.");
+                }
+                return Ok(customerFromRepo);
             }
-            return Ok(customerFromRepo);
+            else
+            {
+                var errors = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
+                return BadRequest(errors);
+            }
         }
 
         [HttpPatch("{id}", Name = "PartiallyUpdateCustomer")]
