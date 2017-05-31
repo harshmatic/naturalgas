@@ -1,0 +1,25 @@
+{
+  "name": "naturalgas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shaggyshelar/naturalgas.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shaggyshelar/naturalgas/issues"
+  },
+  "homepage": "https://github.com/shaggyshelar/naturalgas#readme",
+  "dependencies": {
+    "jsreport-core": "^1.3.2",
+    "jsreport-jsrender": "^1.0.2",
+    "jsreport-phantom-pdf": "^1.4.5"
+  }
+}

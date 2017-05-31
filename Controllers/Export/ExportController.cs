@@ -13,6 +13,8 @@ using ESPL.NG.Helpers.Customer;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using OfficeOpenXml;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.NodeServices;
 
 namespace naturalgas.Controllers.Export
 {
@@ -38,8 +40,8 @@ namespace naturalgas.Controllers.Export
         }
 
         [HttpGet]
-        [Route("Demo")]
-        public string Demo()
+        [Route("DemoExcel")]
+        public string DemoExcel()
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
             string sFileName = @"ExportedDocuments/demo.xlsx";
@@ -79,6 +81,19 @@ namespace naturalgas.Controllers.Export
                 package.Save(); //Save the workbook.
             }
             return URL;
+        }
+
+        [HttpGet]
+        [Route("DemoPDF")]
+        public async Task<IActionResult> DemoPDF([FromServices] INodeServices nodeServices)
+        {
+            var result = await nodeServices.InvokeAsync<byte[]>("./pdf");
+            HttpContext.Response.ContentType = "application/pdf";
+            string filename = @"ExportedDocuments/report.pdf";
+            HttpContext.Response.Headers.Add("x-filename", filename);
+            HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "x-filename");
+            HttpContext.Response.Body.Write(result, 0, result.Length);
+            return new ContentResult();
         }
     }
 }
