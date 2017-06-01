@@ -17,7 +17,7 @@ namespace ESPL.NG
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
-                .UseUrls("http://localhost:6060")
+                .UseUrls("http://192.168.101.162:6060")
                 .Build();
 
             host.Run();
