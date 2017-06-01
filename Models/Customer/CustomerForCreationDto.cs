@@ -7,39 +7,39 @@ namespace ESPL.NG.Models
 {
     public class CustomerForCreationDto : BaseDto
     {
-        [RequiredAttribute(ErrorMessage="CustomerName is a required field.")]
-        [MaxLengthAttribute(50,ErrorMessage="CustomerName cannot be greater than 50 characters.")]
+        [RequiredAttribute(ErrorMessage="Please Enter Name.")]
+        [MaxLengthAttribute(50,ErrorMessage="Name cannot be greater than 50 characters.")]
         public string CustomerName { get; set; }
 
-        [RequiredAttribute(ErrorMessage="Mobile Number is required field.")]
+        [RequiredAttribute(ErrorMessage="Please enter mobile number.")]
         [MaxLengthAttribute(20, ErrorMessage="Mobile number cannot be greater than 20 characters.")]
         public string Mobile { get; set; }
         
         [MaxLengthAttribute(20, ErrorMessage="Landline cannot be greater than 20 characters.")]
         public string Landline { get; set; }
         
-        [RequiredAttribute (ErrorMessage="CustomerEmail is a required field.")]
-        [MaxLengthAttribute(50,ErrorMessage="CustomerEmail cannot be greater than 50 characters.")]
+        [RequiredAttribute (ErrorMessage="Pelase enter email address")]
+        [MaxLengthAttribute(50,ErrorMessage="Email cannot be greater than 50 characters.")]
         public string CustomerEmail { get; set; }
         
-        [RequiredAttribute(ErrorMessage="DateOfBirth is a required field.")]
+        [RequiredAttribute(ErrorMessage="Please enter date of birth")]
         public DateTime DateOfBirth { get; set; }
         
-        [RequiredAttribute(ErrorMessage="CustomerAddress is a required field.")]
-        [MaxLengthAttribute(500,ErrorMessage="CustomerAddress cannot be greater than 500 characters.")]
+        [RequiredAttribute(ErrorMessage="Please enter current address")]
+        [MaxLengthAttribute(500,ErrorMessage="Address cannot be greater than 500 characters.")]
         public string CustomerAddress { get; set; }
         
-        [RequiredAttribute(ErrorMessage="Status is a required field.")]
+        [RequiredAttribute(ErrorMessage="Pelase check your status")]
         public bool Status { get; set; }
         
-        [RequiredAttribute(ErrorMessage="DistributorName is a required field.")]
-        [MaxLengthAttribute(50,ErrorMessage="DistributorName cannot be greater than 50 characters.")]
+        [RequiredAttribute(ErrorMessage="Please enter distributor name.")]
+        [MaxLengthAttribute(50,ErrorMessage="Distributor Name cannot be greater than 50 characters.")]
         public string  DistributorName { get; set; }
 
-        [MaxLengthAttribute(500,ErrorMessage="DistributorAddress cannot be greater than 500 characters.")]
+        [MaxLengthAttribute(500,ErrorMessage="Distributor Address cannot be greater than 500 characters.")]
         public string DistributorAddress { get; set; }
 
-        [RequiredAttribute(ErrorMessage="DistributorContact is a required field.")]
+        [RequiredAttribute(ErrorMessage="Please enter distributor contact details")]
         [MaxLengthAttribute(20,ErrorMessage="DistributorContact cannot be greater than 20 characters.")]
         public string DistributorContact { get; set; }
     }
