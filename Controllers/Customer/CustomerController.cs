@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.NodeServices;
 using naturalgas.Helpers.Customer;
+using OfficeOpenXml.Style;
 
 namespace naturalgas.Controllers.Customers
 {
@@ -162,32 +163,40 @@ namespace naturalgas.Controllers.Customers
                 // add a new worksheet to the empty workbook
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Customer");
                 //First add the headers
-                worksheet.Cells[1, 1].Value = "Customer ID";
-                worksheet.Cells[1, 2].Value = "Name";
-                worksheet.Cells[1, 3].Value = "Mobile";
-                worksheet.Cells[1, 4].Value = "Landline";
-                worksheet.Cells[1, 5].Value = "Customer Email";
-                worksheet.Cells[1, 6].Value = "Date Of Birth";
-                worksheet.Cells[1, 7].Value = "Customer Address";
-                worksheet.Cells[1, 8].Value = "Status";
-                worksheet.Cells[1, 9].Value = "Distributor Name";
-                worksheet.Cells[1, 10].Value = "Distributor Address";
-                worksheet.Cells[1, 11].Value = "Distributor Contact";
+                worksheet.Cells[1, 1].Value = "Name";
+                worksheet.Cells[1, 2].Value = "Mobile";
+                worksheet.Cells[1, 3].Value = "Landline";
+                worksheet.Cells[1, 4].Value = "Customer Email";
+                worksheet.Cells[1, 5].Value = "Date Of Birth";
+                worksheet.Cells[1, 6].Value = "Customer Address";
+                worksheet.Cells[1, 7].Value = "Status";
+                worksheet.Cells[1, 8].Value = "Distributor Name";
+                worksheet.Cells[1, 9].Value = "Distributor Address";
+                worksheet.Cells[1, 10].Value = "Distributor Contact";
+                worksheet.Cells[1, 1].Style.Font.Bold = true;
+                worksheet.Cells[1, 2].Style.Font.Bold = true;
+                worksheet.Cells[1, 3].Style.Font.Bold = true;
+                worksheet.Cells[1, 4].Style.Font.Bold = true;
+                worksheet.Cells[1, 5].Style.Font.Bold = true;
+                worksheet.Cells[1, 6].Style.Font.Bold = true;
+                worksheet.Cells[1, 7].Style.Font.Bold = true;
+                worksheet.Cells[1, 8].Style.Font.Bold = true;
+                worksheet.Cells[1, 9].Style.Font.Bold = true;
+                worksheet.Cells[1, 10].Style.Font.Bold = true;
 
                 var index = 2;
                 customers.ForEach(customer =>
                 {
-                    worksheet.Cells[string.Format("A{0}", index)].Value = customer.CustomerID;
-                    worksheet.Cells[string.Format("B{0}", index)].Value = customer.CustomerName;
-                    worksheet.Cells[string.Format("C{0}", index)].Value = customer.Mobile;
-                    worksheet.Cells[string.Format("D{0}", index)].Value = customer.Landline;
-                    worksheet.Cells[string.Format("E{0}", index)].Value = customer.CustomerEmail;
-                    worksheet.Cells[string.Format("F{0}", index)].Value = customer.DateOfBirth;
-                    worksheet.Cells[string.Format("G{0}", index)].Value = customer.CustomerAddress;
-                    worksheet.Cells[string.Format("H{0}", index)].Value = customer.Status;
-                    worksheet.Cells[string.Format("I{0}", index)].Value = customer.DistributorName;
-                    worksheet.Cells[string.Format("J{0}", index)].Value = customer.DistributorAddress;
-                    worksheet.Cells[string.Format("K{0}", index++)].Value = customer.DistributorContact;
+                    worksheet.Cells[string.Format("A{0}", index)].Value = customer.CustomerName;
+                    worksheet.Cells[string.Format("B{0}", index)].Value = customer.Mobile;
+                    worksheet.Cells[string.Format("C{0}", index)].Value = customer.Landline;
+                    worksheet.Cells[string.Format("D{0}", index)].Value = customer.CustomerEmail;
+                    worksheet.Cells[string.Format("E{0}", index)].Value = customer.DateOfBirth;
+                    worksheet.Cells[string.Format("F{0}", index)].Value = customer.CustomerAddress;
+                    worksheet.Cells[string.Format("G{0}", index)].Value = customer.Status;
+                    worksheet.Cells[string.Format("H{0}", index)].Value = customer.DistributorName;
+                    worksheet.Cells[string.Format("I{0}", index)].Value = customer.DistributorAddress;
+                    worksheet.Cells[string.Format("J{0}", index++)].Value = customer.DistributorContact;
                 });
 
                 package.Save();
@@ -435,7 +444,7 @@ namespace naturalgas.Controllers.Customers
             int count = 1, iterCount = 2;
             string table = "<table  style='border:1px solid black;border-collapse:collapse;'><thead><tr>";
 
-            table += "<th style='border:1px solid black;'>CustomerID  </th>";
+            // table += "<th style='border:1px solid black;'>CustomerID  </th>";
             table += "<th style='border:1px solid black;'>CustomerName</th>";
             table += "<th style='border:1px solid black;'>Mobile</th>";
             table += "<th style='border:1px solid black;'>Landline</th>";
@@ -452,7 +461,7 @@ namespace naturalgas.Controllers.Customers
             foreach (Customer customer in customerList)
             {
                 table += "<tr>";
-                table += "<td style='border:1px solid black;'>" + customer.CustomerID + "</td>";
+                // table += "<td style='border:1px solid black;'>" + customer.CustomerID + "</td>";
                 table += "<td style='border:1px solid black;'>" + customer.CustomerName + "</td>";
                 table += "<td style='border:1px solid black;'>" + customer.Mobile + "</td>";
                 table += "<td style='border:1px solid black;'>" + customer.Landline + "</td>";
