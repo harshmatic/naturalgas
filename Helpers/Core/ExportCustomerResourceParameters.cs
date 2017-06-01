@@ -4,7 +4,7 @@ namespace naturalgas.Helpers.Core
 {
     public class ExportResourceParameters : BaseResourceParameters
     {
-        public new int PageSize
+        public override int PageSize
         {
             get
             {
