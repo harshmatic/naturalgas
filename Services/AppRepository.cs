@@ -117,11 +117,11 @@ namespace ESPL.NG.Services
                 collectionBeforePaging = collectionBeforePaging
                     .Where(a => a.CustomerName.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.Mobile.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.Landline.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || Convert.ToString(a.Landline).ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)                    
                     || a.CustomerEmail.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.DistributorName.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.DistributorContact.ToLowerInvariant().Contains(searchQueryForWhereClause));
+                    || Convert.ToString(a.DistributorContact).ToLowerInvariant().Contains(searchQueryForWhereClause));
 
             }
 
