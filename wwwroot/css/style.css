@@ -11,7 +11,74 @@ html {
   line-height: 1.15;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%; }
+th {
+  cursor:pointer;
+}
+.mobile {
+  display:none
+}
 
+@media only screen and (max-width: 750px) {
+  .mobile{
+    display: block;
+    text-align: center;
+  }
+}
+
+        
+.screen {
+   display: block;
+   text-align: center;
+}
+    
+@media only screen and (max-width: 850px) {
+  .one{
+     display: none !important;
+  }
+}
+@media only screen and (max-width: 800px) {
+  .two{
+     display: none !important;
+  }
+}
+@media only screen and (max-width: 750px) {
+  .three{
+     display: none !important;
+  }
+}
+@media only screen and (max-width: 700px) {
+  .four{
+    display: none !important;
+  }
+}
+@media only screen and (max-width: 650px) {
+  .five{
+     display: none !important;
+  }
+}
+.delete {
+  color:rgb(248, 108, 107);
+  cursor:pointer;
+  padding-right: 11px;
+  padding-left: 11px;
+  font-size: 15px;
+  display: inline-block;
+}
+.delete:hover {
+   color:red;
+}
+.edit {
+  padding-right: 11px;
+  padding-left: 11px;
+  font-size: 15px;
+  display: inline-block;
+}
+
+.arrow {
+  float: right;
+  padding-top: 3px;
+  color:cadetblue;
+}
 body {
   margin: 0; }
 
@@ -8970,7 +9037,7 @@ h1 {
     height: 100%;
     z-index: 1000;
     opacity: 0.8;
-        background: black;
+        background: white;
 }
 #loader {
     display: block;
