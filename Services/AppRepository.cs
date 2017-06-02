@@ -8,8 +8,8 @@ using ESPL.NG.Helpers.Core;
 using ESPL.NG.Entities.Core;
 using ESPL.NG.Models.Core;
 using ESPL.NG.Helpers.Customer;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+// using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+// using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using naturalgas.Entities.Core;
 using naturalgas.Helpers.Core;
@@ -21,18 +21,18 @@ namespace ESPL.NG.Services
     {
         private Entities.ApplicationContext _context;
         private IPropertyMappingService _propertyMappingService;
-        private RoleManager<IdentityRole> _roleMgr;
-        private UserManager<AppUser> _userMgr;
+        // private RoleManager<IdentityRole> _roleMgr;
+        // private UserManager<AppUser> _userMgr;
 
         public AppRepository(Entities.ApplicationContext context,
-            IPropertyMappingService propertyMappingService,
-            UserManager<AppUser> userMgr,
-            RoleManager<IdentityRole> roleMgr)
+            IPropertyMappingService propertyMappingService)
+            // UserManager<AppUser> userMgr,
+            // RoleManager<IdentityRole> roleMgr)
         {
             _context = context;
             _propertyMappingService = propertyMappingService;
-            _userMgr = userMgr;
-            _roleMgr = roleMgr;
+            // _userMgr = userMgr;
+            // _roleMgr = roleMgr;
         }
 
         public bool Save()
@@ -42,61 +42,60 @@ namespace ESPL.NG.Services
 
         #region AppUser
 
-        public PagedList<AppUser> GetAppUsers(AppUsersResourceParameters esplUserResourceParameters)
-        {
-            var collectionBeforePaging =
-               _userMgr.Users.ApplySort(esplUserResourceParameters.OrderBy,
-                _propertyMappingService.GetPropertyMapping<AppUserDto, AppUser>());
+        // public PagedList<AppUser> GetAppUsers(AppUsersResourceParameters esplUserResourceParameters)
+        // {
+        //     var collectionBeforePaging =
+        //        _userMgr.Users.ApplySort(esplUserResourceParameters.OrderBy,
+        //         _propertyMappingService.GetPropertyMapping<AppUserDto, AppUser>());
 
-            if (!string.IsNullOrEmpty(esplUserResourceParameters.SearchQuery))
-            {
-                // trim & ignore casing
-                var searchQueryForWhereClause = esplUserResourceParameters.SearchQuery
-                    .Trim().ToLowerInvariant();
+        //     if (!string.IsNullOrEmpty(esplUserResourceParameters.SearchQuery))
+        //     {
+        //         // trim & ignore casing
+        //         var searchQueryForWhereClause = esplUserResourceParameters.SearchQuery
+        //             .Trim().ToLowerInvariant();
 
-                collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.FirstName.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.LastName.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.Email.ToLowerInvariant().Contains(searchQueryForWhereClause));
-            }
+        //         collectionBeforePaging = collectionBeforePaging
+        //             .Where(a => a.FirstName.ToLowerInvariant().Contains(searchQueryForWhereClause)
+        //             || a.LastName.ToLowerInvariant().Contains(searchQueryForWhereClause));
+        //     }
 
-            return PagedList<AppUser>.Create(collectionBeforePaging,
-                esplUserResourceParameters.PageNumber,
-                esplUserResourceParameters.PageSize);
-        }
+        //     return PagedList<AppUser>.Create(collectionBeforePaging,
+        //         esplUserResourceParameters.PageNumber,
+        //         esplUserResourceParameters.PageSize);
+        // }
 
-        public AppUser GetAppUser(Guid esplUserId)
-        {
-            return _userMgr.Users.FirstOrDefault(a => a.Id == esplUserId.ToString());
-        }
+        // public AppUser GetAppUser(Guid esplUserId)
+        // {
+        //     return _userMgr.Users.FirstOrDefault(a => a.UserId == esplUserId);
+        // }
 
-        public IEnumerable<AppUser> GetAppUsers(IEnumerable<Guid> esplUserIds)
-        {
-            return _userMgr.Users.Where(a => esplUserIds.Contains(new Guid(a.Id)))
-                .OrderBy(a => a.FirstName)
-                .OrderBy(a => a.LastName)
-                .ToList();
-        }
+        // public IEnumerable<AppUser> GetAppUsers(IEnumerable<Guid> esplUserIds)
+        // {
+        //     return _userMgr.Users.Where(a => esplUserIds.Contains(a.UserId))
+        //         .OrderBy(a => a.FirstName)
+        //         .OrderBy(a => a.LastName)
+        //         .ToList();
+        // }
 
-        public void AddAppUser(AppUser esplUser)
-        {
-            _userMgr.CreateAsync(esplUser);
-        }
+        // public void AddAppUser(AppUser esplUser)
+        // {
+        //     _userMgr.CreateAsync(esplUser);
+        // }
 
-        public async void DeleteAppUser(AppUser esplUser)
-        {
-            await _userMgr.DeleteAsync(esplUser);
-        }
+        // public async void DeleteAppUser(AppUser esplUser)
+        // {
+        //     await _userMgr.DeleteAsync(esplUser);
+        // }
 
-        public void UpdateAppUser(AppUser esplUser)
-        {
-            // no code in this implementation
-        }
+        // public void UpdateAppUser(AppUser esplUser)
+        // {
+        //     // no code in this implementation
+        // }
 
-        public bool AppUserExists(Guid esplUserId)
-        {
-            return _userMgr.Users.Any(a => a.Id == esplUserId.ToString());
-        }
+        // public bool AppUserExists(Guid esplUserId)
+        // {
+        //     return _userMgr.Users.Any(a => a.UserId == esplUserId);
+        // }
 
         #endregion AppUser
 
@@ -104,7 +103,7 @@ namespace ESPL.NG.Services
         public PagedList<Customer> GetCustomers(CustomerResourceParameters CustomersResourceParameters)
         {
             var collectionBeforePaging =
-                _context.Customer.Where(c=>!c.IsDelete)
+                _context.Customer.Where(c => !c.IsDelete)
                 .ApplySort(CustomersResourceParameters.OrderBy,
                 _propertyMappingService.GetPropertyMapping<CustomerDto, Customer>());
 
@@ -118,7 +117,7 @@ namespace ESPL.NG.Services
                     .Where(a => a.CustomerName.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.Mobile.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || Convert.ToString(a.Landline).ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)                    
+                    || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.CustomerEmail.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.DistributorName.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || Convert.ToString(a.DistributorContact).ToLowerInvariant().Contains(searchQueryForWhereClause));
@@ -133,7 +132,7 @@ namespace ESPL.NG.Services
         public PagedList<Customer> GetCustomers(ExportCustomerResourceParameters CustomersResourceParameters)
         {
             var collectionBeforePaging =
-                _context.Customer.Where(c=>!c.IsDelete)
+                _context.Customer.Where(c => !c.IsDelete)
                 .ApplySort(CustomersResourceParameters.OrderBy,
                 _propertyMappingService.GetPropertyMapping<CustomerDto, Customer>());
 
@@ -147,7 +146,7 @@ namespace ESPL.NG.Services
                     .Where(a => a.CustomerName.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.Mobile.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.Landline.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)                    
+                    || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.CustomerEmail.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.DistributorName.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.DistributorContact.ToLowerInvariant().Contains(searchQueryForWhereClause));
@@ -175,7 +174,7 @@ namespace ESPL.NG.Services
             return _context.Customer
             .Where(a => a.IsDelete == false)
             .FirstOrDefault(a => a.CustomerID == CustomerId);
-        }       
+        }
 
 
         public IEnumerable<Customer> GetCustomers(IEnumerable<Guid> CustomerIds)

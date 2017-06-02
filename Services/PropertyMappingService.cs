@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ESPL.NG.Entities.Core;
 using ESPL.NG.Models.Core;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+// using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ESPL.NG.Services
 {
@@ -18,7 +18,6 @@ namespace ESPL.NG.Services
                { "Id", new PropertyMappingValue(new List<string>() { "Id" } ) },
                { "FirstName", new PropertyMappingValue(new List<string>() { "FirstName" } )},
                { "LastName", new PropertyMappingValue(new List<string>() { "LastName" } )},
-               { "Email", new PropertyMappingValue(new List<string>() { "Email" } )},
                { "UserName", new PropertyMappingValue(new List<string>() { "UserName" } )}
           };
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using ESPL.NG.Helpers.Core;
 using ESPL.NG.Entities.Core;
 using ESPL.NG.Helpers.Customer;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+// using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ESPL.NG.Models;
 using naturalgas.Entities.Core;
 using naturalgas.Helpers.Core;
@@ -19,13 +19,13 @@ namespace ESPL.NG.Services
 
         #region AppUser
 
-        PagedList<AppUser> GetAppUsers(AppUsersResourceParameters esplUserResourceParameters);
-        AppUser GetAppUser(Guid esplUserId);
-        IEnumerable<AppUser> GetAppUsers(IEnumerable<Guid> esplUserIds);
-        void AddAppUser(AppUser esplUser);
-        void DeleteAppUser(AppUser esplUser);
-        void UpdateAppUser(AppUser esplUser);
-        bool AppUserExists(Guid esplUserId);
+        // PagedList<AppUser> GetAppUsers(AppUsersResourceParameters esplUserResourceParameters);
+        // AppUser GetAppUser(Guid esplUserId);
+        // IEnumerable<AppUser> GetAppUsers(IEnumerable<Guid> esplUserIds);
+        // void AddAppUser(AppUser esplUser);
+        // void DeleteAppUser(AppUser esplUser);
+        // void UpdateAppUser(AppUser esplUser);
+        // bool AppUserExists(Guid esplUserId);
 
         #endregion AppUser
 
