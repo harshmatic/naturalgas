@@ -590,10 +590,12 @@ namespace naturalgas.Controllers.Customers
 
         private void SetItemHistoryData(CustomerForUpdationDto model, Customer modelRepo)
         {
-            // model.CreatedOn = modelRepo.CreatedOn;
-            // if (modelRepo.CreatedBy != null)
-            //     model.CreatedBy = modelRepo.CreatedBy.Value;
-            // model.UpdatedOn = DateTime.Now;
+            model.CreatedOn = modelRepo.CreatedOn;
+            if (modelRepo.CreatedBy != null)
+                model.CreatedBy = modelRepo.CreatedBy.Value;
+            model.UpdatedOn = DateTime.Now;
+            //TODO: Remove this line <model.UpdatedBy = null;>
+            model.UpdatedBy = null;
             // var CustomerID = User.Claims.FirstOrDefault(cl => cl.Type == "CustomerID");
             // model.UpdatedBy = new Guid(CustomerID.Value);
         }
@@ -602,6 +604,8 @@ namespace naturalgas.Controllers.Customers
         {
             // var CustomerID = User.Claims.FirstOrDefault(cl => cl.Type == "CustomerID");
             // model.CreatedBy = new Guid(CustomerID.Value);
+            //TODO: Remove this line <model.UpdatedBy = null;>
+            model.UpdatedBy = null;
         }
 
     }
