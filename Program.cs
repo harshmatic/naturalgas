@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,12 +13,11 @@ namespace ESPL.NG
     {
         public static void Main(string[] args)
         {
+            //var cert = new X509Certificate2("SelfSignedCertificate1.pfx", "espl@123");
+
             var host = new WebHostBuilder()
-                .UseKestrel(options =>
-            {
-                options.AddServerHeader = false;
-                options.UseHttps("SelfSignedCertificate1.pfx", "espl@123");
-            })
+                // .UseKestrel(cfg => cfg.UseHttps(cert))
+                .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
