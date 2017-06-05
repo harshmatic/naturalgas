@@ -1,0 +1,80 @@
+{
+	"id": "58304098-23dd-8184-1b3d-a8a6804f1ea0",
+	"name": "Authentication",
+	"description": "",
+	"order": [
+		"2e72f627-3ad6-3264-8ecc-ce9fd216de8c"
+	],
+	"folders": [],
+	"timestamp": 1496652420968,
+	"owner": "898026",
+	"public": false,
+	"requests": [
+		{
+			"id": "2e72f627-3ad6-3264-8ecc-ce9fd216de8c",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:6060/connect/token",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "58304098-23dd-8184-1b3d-a8a6804f1ea0",
+			"data": [
+				{
+					"key": "username",
+					"value": "Bob",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "P@ssw0rd",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "grant_type",
+					"value": "password",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "client_id",
+					"value": "client_id",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "client_secret",
+					"value": "client_secret",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"name": "Natural Gas Auth",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1496652437240,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {}
+		}
+	]
+}
