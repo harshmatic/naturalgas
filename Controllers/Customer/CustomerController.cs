@@ -18,9 +18,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.NodeServices;
 using naturalgas.Helpers.Customer;
 using OfficeOpenXml.Style;
+using Microsoft.AspNetCore.Authorization;
 
 namespace naturalgas.Controllers.Customers
 {
+    [Authorize]
     [Route("api/customers")]
     public class CustomerController : Controller
     {

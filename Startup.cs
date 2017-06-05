@@ -36,6 +36,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using AspNet.Security.OpenIdConnect.Server;
+using AspNet.Security.OAuth.Validation;
 
 namespace ESPL.NG
 {
@@ -236,12 +237,37 @@ namespace ESPL.NG
             app.UseStaticFiles();
             // app.UseIdentity();
 
+            app.UseWhen(context => context.Request.Path.StartsWithSegments(new PathString("/api")), branch =>
+            {
+                branch.UseOAuthValidation(new OAuthValidationOptions
+                {
+                    AutomaticAuthenticate = true,
+                    AutomaticChallenge = true
+                });
+
+                // Alternatively, you can also use the introspection middleware.
+                // Using it is recommended if your resource server is in a
+                // different application/separated from the authorization server.
+                //
+                // branch.UseOAuthIntrospection(new OAuthIntrospectionOptions
+                // {
+                //     AutomaticAuthenticate = true,
+                //     AutomaticChallenge = true,
+                //     Authority = "http://localhost:54540/",
+                //     Audiences = { "resource_server" },
+                //     ClientId = "resource_server",
+                //     ClientSecret = "875sqd4s5d748z78z7ds1ff8zz8814ff88ed8ea4z4zzd"
+                // });
+            });
+
             //app.UseOAuthValidation();
             app.UseOpenIdConnectServer(options =>
             {
                 // Enable the token endpoint.
                 options.TokenEndpointPath = "/connect/token";
                 options.AllowInsecureHttp = true;
+                //options.AutomaticAuthenticate = true;
+                //options.AutomaticChallenge = true;
                 // Implement OnValidateTokenRequest to support flows using the token endpoint.
                 options.Provider.OnValidateTokenRequest = context =>
                 {
