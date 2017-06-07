@@ -12,6 +12,10 @@ namespace ESPL.NG.Entities
         public Guid CustomerID { get; set; }
         
         [RequiredAttribute]
+        [MaxLengthAttribute(10)]
+        public string NationalID { get; set; }
+        
+        [RequiredAttribute]
         [MaxLengthAttribute(50)]
         public string CustomerName { get; set; }
         [RequiredAttribute]

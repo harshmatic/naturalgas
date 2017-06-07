@@ -12,6 +12,10 @@ namespace ESPL.NG.Models
             this.UpdatedOn = DateTime.Now;
         }
 
+        [RequiredAttribute(ErrorMessage="Please Enter the National ID")]
+        [MaxLengthAttribute(10,ErrorMessage="National ID Can not be greter than 10 characters")]
+        public string NationalID { get; set; }
+        
         [RequiredAttribute(ErrorMessage="Please Enter Name.")]
         [MaxLengthAttribute(50,ErrorMessage="Name cannot be greater than 50 characters.")]
         public string CustomerName { get; set; }
