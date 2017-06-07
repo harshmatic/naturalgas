@@ -115,11 +115,12 @@ namespace ESPL.NG.Services
                     .Trim().ToLowerInvariant();
 
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.CustomerName.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    .Where(a => a.Firstname.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.Surname.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.NationalID.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.Mobile.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || Convert.ToString(a.Landline).ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)                    
-                    || a.CustomerEmail.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.Email.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.DistributorName.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || Convert.ToString(a.DistributorContact).ToLowerInvariant().Contains(searchQueryForWhereClause));
 
@@ -144,11 +145,12 @@ namespace ESPL.NG.Services
                     .Trim().ToLowerInvariant();
 
                 collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.CustomerName.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    .Where(a => a.Firstname.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.Surname.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.NationalID.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.Mobile.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.Landline.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || Convert.ToString(a.DateOfBirth).ToLowerInvariant().Contains(searchQueryForWhereClause)                    
-                    || a.CustomerEmail.ToLowerInvariant().Contains(searchQueryForWhereClause)
+                    || a.Email.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.DistributorName.ToLowerInvariant().Contains(searchQueryForWhereClause)
                     || a.DistributorContact.ToLowerInvariant().Contains(searchQueryForWhereClause));
 
@@ -166,7 +168,7 @@ namespace ESPL.NG.Services
                     select new LookUpItem
                     {
                         ID = a.CustomerID,
-                        Name = a.CustomerName
+                        Name = a.Firstname+" "+a.Surname
                     }).ToList();
         }
 
@@ -183,7 +185,7 @@ namespace ESPL.NG.Services
             return _context.Customer
                 .Where(a => a.IsDelete == false)
                 .Where(a => CustomerIds.Contains(a.CustomerID))
-                .OrderBy(a => a.CustomerName)
+                .OrderBy(a => a.Firstname)
                 .ToList();
         }
 
