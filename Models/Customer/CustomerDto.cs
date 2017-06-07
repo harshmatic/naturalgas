@@ -10,6 +10,8 @@ namespace ESPL.NG.Models
     public class CustomerDto : BaseDto
     {
         public Guid CustomerID { get; set; }
+
+        public string NationalID { get; set; }
         
         public string CustomerName { get; set; }
         

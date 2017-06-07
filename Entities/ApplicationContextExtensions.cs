@@ -25,6 +25,7 @@ namespace ESPL.NG.Entities
                 {
                     var cust = new Customer
                     {
+                        NationalID=GenrateRandomNumber(),
                         CustomerID = Guid.NewGuid(),
                         CustomerName = "John Doe" + k.ToString(),
                         Mobile = "9876543210",
@@ -46,6 +47,13 @@ namespace ESPL.NG.Entities
                 
             }
 
+        }
+
+        private static string GenrateRandomNumber()
+        {
+            Random rnd = new Random();
+            var result= rnd.Next(10000000, 99999999).ToString();
+            return result;
         }
         // private static void UpdateEmployee(ApplicationContext context)
         // {
