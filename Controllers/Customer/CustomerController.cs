@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.NodeServices;
 using naturalgas.Helpers.Customer;
 using OfficeOpenXml.Style;
+using naturalgas.Models.Customer;
 
 namespace naturalgas.Controllers.Customers
 {
@@ -431,6 +432,34 @@ namespace naturalgas.Controllers.Customers
             return NoContent();
         }
 
+        [HttpPost("validate", Name = "ValidateNationalId")]
+        //[Authorize(Policy = Permissions.CustomerCreate)]
+        // [RequestHeaderMatchesMediaType("Content-Type",
+        //     new[] { "application/vnd.marvin.customer.full+json" })]
+        public IActionResult ValidateNationalId([FromBody] CustomerValidationResourceParameters customerValidationResourceParameters)
+        {
+            var customerObj = _appRepository.ValidateNationalId(customerValidationResourceParameters.NationalID);
+
+            CustomerIPRSDto customerData = new CustomerIPRSDto()
+            {
+                ErrorCode = customerObj.ErrorCode,
+                ErrorMessage = customerObj.ErrorMessage,
+                ErrorOcurred = customerObj.ErrorOcurred,
+                NationalID = customerObj.Serial_Number,
+                Firstname = customerObj.First_Name,
+                Surname = customerObj.Surname,
+                Othername = customerObj.Other_Name,
+                Gender = customerObj.Gender,
+                DateOfBirth = customerObj.Date_of_Birth != null ? customerObj.Date_of_Birth.Value : DateTime.MinValue,
+                Citizenship = customerObj.Citizenship,
+                Occupation = customerObj.Occupation,
+                Address = customerObj.Place_of_Live,
+                Pin = customerObj.Pin
+            };
+
+            return Ok(customerData);
+        }
+
         [HttpOptions]
         public IActionResult GetCustomerOptions()
         {
@@ -441,7 +470,7 @@ namespace naturalgas.Controllers.Customers
         private string CreateHTMLTable(PagedList<Customer> customerList)
         {
             PropertyInfo[] allProperties = (new Customer()).GetType().GetProperties();
-            int count = 1, iterCount = 2;
+            int iterCount = 2;
             string table = "<table  style='border:1px solid black;border-collapse:collapse;'><thead><tr>";
 
             // table += "<th style='border:1px solid black;'>CustomerID  </th>";

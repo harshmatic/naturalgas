@@ -10,6 +10,7 @@ using ESPL.NG.Models;
 using naturalgas.Entities.Core;
 using naturalgas.Helpers.Core;
 using naturalgas.Helpers.Customer;
+using naturalgas.Models.Customer;
 
 namespace ESPL.NG.Services
 {
@@ -39,6 +40,7 @@ namespace ESPL.NG.Services
         void UpdateCustomer(Customer customer);
         bool CustomerExists(Guid authorId);
         IEnumerable<LookUpItem> GetCustomerAsLookUp();        
+        NationalIDResponse ValidateNationalId(string nationalId);
 
         #endregion
     }
