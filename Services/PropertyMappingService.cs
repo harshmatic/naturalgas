@@ -26,17 +26,23 @@ namespace ESPL.NG.Services
             new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
         {
             { "CustomerID", new PropertyMappingValue(new List<string>() { "CustomerID" } ) },
-            { "CustomerName", new PropertyMappingValue(new List<string>() { "CustomerName" } ) },
+            { "NationalID", new PropertyMappingValue(new List<string>() { "NationalID" } ) },
+            { "SerialNumber", new PropertyMappingValue(new List<string>() { "SerialNumber" } ) },
+            { "Firstname", new PropertyMappingValue(new List<string>() { "Firstname" } ) },
+            { "Surname", new PropertyMappingValue(new List<string>() { "Surname" } ) },
+            { "Othername", new PropertyMappingValue(new List<string>() { "Othername" } ) },
             { "Mobile", new PropertyMappingValue(new List<string>() { "Mobile" } ) },
-            { "Landline", new PropertyMappingValue(new List<string>() { "Landline" } ) },
+            { "Email", new PropertyMappingValue(new List<string>() { "Email" } ) },
+            { "Gender", new PropertyMappingValue(new List<string>() { "Gender" } ) },
             { "DateOfBirth", new PropertyMappingValue(new List<string>() { "DateOfBirth" } ) },
-            { "CustomerEmail", new PropertyMappingValue(new List<string>() { "CustomerEmail" } ) },
-            { "CustomerAddress", new PropertyMappingValue(new List<string>() { "CustomerAddress" } ) },
+            { "Citizenship", new PropertyMappingValue(new List<string>() { "Citizenship" } ) },
+            { "Occupation", new PropertyMappingValue(new List<string>() { "Occupation" } ) },
+            { "Pin", new PropertyMappingValue(new List<string>() { "Pin" } ) },
+            { "Address", new PropertyMappingValue(new List<string>() { "Address" } ) },
             { "Status", new PropertyMappingValue(new List<string>() { "Status" } ) },
             { "DistributorName", new PropertyMappingValue(new List<string>() { "DistributorName" } ) },
             { "DistributorAddress", new PropertyMappingValue(new List<string>() { "DistributorAddress" } ) },
             { "DistributorContact", new PropertyMappingValue(new List<string>() { "DistributorContact" } ) },
-            
         };
 
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
