@@ -17,22 +17,24 @@ namespace ESPL.NG.Entities
         {
             
             int k=1;
-            for (int j = 0; j < 10; j++)
+            for (int j = 0; j < 5; j++)
             {
                 
                 var customers = new List<Customer>();
-                for (int i=1;i <= 1000; i++)
+                for (int i=1;i <= 100; i++)
                 {
                     var cust = new Customer
                     {
                         NationalID=GenrateRandomNumber(),
+                        SerialNumber=GenrateRandomNumber(),
                         CustomerID = Guid.NewGuid(),
-                        CustomerName = "John Doe" + k.ToString(),
+                        Firstname = "John Doe" + k.ToString(),
+                        Surname = "John Doe" + k.ToString(), 
                         Mobile = "9876543210",
-                        Landline = "020548789444",
-                        CustomerEmail = "john.doe" + k.ToString() + "@gmail.com",
+                        Email = "john.doe" + k.ToString() + "@gmail.com",
+                        Gender = "Male",
                         DateOfBirth = DateTime.Now.AddYears(-30).AddDays(k),
-                        CustomerAddress = "Westlands Commercial Centre, Ring Road",
+                        Address = "Westlands Commercial Centre, Ring Road",
                         Status = true,
                         DistributorName = "Natural Gas Agency",
                         DistributorAddress = "Westlands Commercial Centre, DP Road",

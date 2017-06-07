@@ -187,12 +187,12 @@ namespace naturalgas.Controllers.Customers
                 var index = 2;
                 customers.ForEach(customer =>
                 {
-                    worksheet.Cells[string.Format("A{0}", index)].Value = customer.CustomerName;
-                    worksheet.Cells[string.Format("B{0}", index)].Value = customer.Mobile;
-                    worksheet.Cells[string.Format("C{0}", index)].Value = customer.Landline;
-                    worksheet.Cells[string.Format("D{0}", index)].Value = customer.CustomerEmail;
+                    worksheet.Cells[string.Format("A{0}", index)].Value = customer.Firstname;
+                    worksheet.Cells[string.Format("B{0}", index)].Value = customer.Surname;
+                    worksheet.Cells[string.Format("C{0}", index)].Value = customer.Mobile;
+                    worksheet.Cells[string.Format("D{0}", index)].Value = customer.Email;
                     worksheet.Cells[string.Format("E{0}", index)].Value = customer.DateOfBirth;
-                    worksheet.Cells[string.Format("F{0}", index)].Value = customer.CustomerAddress;
+                    worksheet.Cells[string.Format("F{0}", index)].Value = customer.Address;
                     worksheet.Cells[string.Format("G{0}", index)].Value = customer.Status;
                     worksheet.Cells[string.Format("H{0}", index)].Value = customer.DistributorName;
                     worksheet.Cells[string.Format("I{0}", index)].Value = customer.DistributorAddress;
@@ -462,12 +462,12 @@ namespace naturalgas.Controllers.Customers
             {
                 table += "<tr>";
                 // table += "<td style='border:1px solid black;'>" + customer.CustomerID + "</td>";
-                table += "<td style='border:1px solid black;'>" + customer.CustomerName + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.Firstname + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.Surname + "</td>";
                 table += "<td style='border:1px solid black;'>" + customer.Mobile + "</td>";
-                table += "<td style='border:1px solid black;'>" + customer.Landline + "</td>";
-                table += "<td style='border:1px solid black;'>" + customer.CustomerEmail + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.Email + "</td>";
                 table += "<td style='border:1px solid black;'>" + customer.DateOfBirth + "</td>";
-                table += "<td style='border:1px solid black;'>" + customer.CustomerAddress + "</td>";
+                table += "<td style='border:1px solid black;'>" + customer.Address + "</td>";
                 table += "<td style='border:1px solid black;'>" + customer.Status + "</td>";
                 table += "<td style='border:1px solid black;'>" + customer.DistributorName + "</td>";
                 table += "<td style='border:1px solid black;'>" + customer.DistributorAddress + "</td>";
