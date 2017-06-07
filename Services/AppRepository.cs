@@ -216,7 +216,6 @@ namespace ESPL.NG.Services
         {
             string response = GetCustomerByNationalID(nationalId);
             NationalIDResponse customerObj = GetCustomerFromResponse(response);
-
             return customerObj;
         }
 
@@ -503,7 +502,7 @@ namespace ESPL.NG.Services
             return "{'ErrorOcurred':true,'ErrorCode':'ISB-105','ErrorMessage':'There is no information for requested search parameters'}";
 
         }
-        
+
         #endregion Customer
     }
 }

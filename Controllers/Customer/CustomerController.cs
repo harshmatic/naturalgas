@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.NodeServices;
 using naturalgas.Helpers.Customer;
 using OfficeOpenXml.Style;
+using naturalgas.Models.Customer;
 
 namespace naturalgas.Controllers.Customers
 {
@@ -438,7 +439,25 @@ namespace naturalgas.Controllers.Customers
         public IActionResult ValidateNationalId([FromBody] CustomerValidationResourceParameters customerValidationResourceParameters)
         {
             var customerObj = _appRepository.ValidateNationalId(customerValidationResourceParameters.NationalID);
-            return Ok(customerObj);
+
+            CustomerIPRSDto customerData = new CustomerIPRSDto()
+            {
+                ErrorCode = customerObj.ErrorCode,
+                ErrorMessage = customerObj.ErrorMessage,
+                ErrorOcurred = customerObj.ErrorOcurred,
+                NationalID = customerObj.Serial_Number,
+                Firstname = customerObj.First_Name,
+                Surname = customerObj.Surname,
+                Othername = customerObj.Other_Name,
+                Gender = customerObj.Gender,
+                DateOfBirth = customerObj.Date_of_Birth != null ? customerObj.Date_of_Birth.Value : DateTime.MinValue,
+                Citizenship = customerObj.Citizenship,
+                Occupation = customerObj.Occupation,
+                Address = customerObj.Place_of_Live,
+                Pin = customerObj.Pin
+            };
+
+            return Ok(customerData);
         }
 
         [HttpOptions]
