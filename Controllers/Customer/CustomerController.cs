@@ -446,6 +446,7 @@ namespace naturalgas.Controllers.Customers
                 ErrorMessage = customerObj.ErrorMessage,
                 ErrorOcurred = customerObj.ErrorOcurred,
                 NationalID = customerObj.Serial_Number,
+                SerialNumber = customerObj.Serial_Number,
                 Firstname = customerObj.First_Name,
                 Surname = customerObj.Surname,
                 Othername = customerObj.Other_Name,
