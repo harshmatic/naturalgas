@@ -5,6 +5,7 @@ namespace naturalgas.Models.Customer
     public class CustomerIPRSDto
     {
         public string NationalID { get; set; }
+        public string SerialNumber { get; set; }
         public string ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
         public string ErrorOcurred { get; set; }
