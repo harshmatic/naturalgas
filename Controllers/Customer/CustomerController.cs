@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.NodeServices;
 using naturalgas.Helpers.Customer;
 using OfficeOpenXml.Style;
 using naturalgas.Models.Customer;
+using NaturalGas.Models.Customer;
+using NaturalGas.Helpers.Customer;
 
 namespace naturalgas.Controllers.Customers
 {
@@ -459,6 +461,13 @@ namespace naturalgas.Controllers.Customers
             };
 
             return Ok(customerData);
+        }
+
+        [HttpGet("report", Name = "GetCustomerRegistrationResults")]
+        public IActionResult GetCustomerRegistrationResults(CustomerRegistrationReportParameters customerRegistrationReportParameters)
+        {
+            IEnumerable<CustomerRegistrationReportDto> customerReports = _appRepository.GetCustomerRegistrationReport(customerRegistrationReportParameters);
+            return Ok(customerReports);
         }
 
         [HttpOptions]
