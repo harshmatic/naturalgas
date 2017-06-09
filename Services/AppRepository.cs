@@ -16,6 +16,8 @@ using naturalgas.Helpers.Core;
 using naturalgas.Helpers.Customer;
 using naturalgas.Models.Customer;
 using Newtonsoft.Json;
+using NaturalGas.Models.Customer;
+using NaturalGas.Helpers.Customer;
 
 namespace ESPL.NG.Services
 {
@@ -502,6 +504,39 @@ namespace ESPL.NG.Services
             return "{'ErrorOcurred':true,'ErrorCode':'ISB-105','ErrorMessage':'There is no information for requested search parameters'}";
 
         }
+
+        public IEnumerable<CustomerRegistrationReportDto> GetCustomerRegistrationReport(
+            CustomerRegistrationReportParameters CustomerRegistrationReportParameters)
+        {
+
+            var result = from c in _context.Customer
+                         group c by new { c.Gender, c.CreatedOn.Year, }
+                         into g
+                         select new CustomerRegistrationReportDto()
+                         {
+                             CustomerCount = g.Count(),
+                             Year = g.Key.Year,
+                             Gender = g.Key.Gender
+                         };
+
+            if (CustomerRegistrationReportParameters.Year != 0)
+                result = from c in _context.Customer
+                         where c.CreatedOn.Year == CustomerRegistrationReportParameters.Year
+                         group c by new { c.Gender, c.CreatedOn.Month, c.CreatedOn.Year, }
+                         into g
+                         select new CustomerRegistrationReportDto()
+                         {
+                             CustomerCount = g.Count(),
+                             Year = g.Key.Year,
+                             Month = g.Key.Month,
+                             Gender = g.Key.Gender
+                         };
+
+
+            return result;
+
+        }
+
 
         #endregion Customer
     }
