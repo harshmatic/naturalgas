@@ -25,8 +25,7 @@ namespace ESPL.NG.Entities
             
             //Addeing Index on Customer
             modelbuilder.Entity<Customer>()
-            .HasIndex(p => new { p.IsDelete, p.Firstname, p.NationalID })
-            .IsUnique();
+            .HasIndex(p => new { p.IsDelete, p.Firstname, p.NationalID });
         }
 
     }

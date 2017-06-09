@@ -11,6 +11,8 @@ using naturalgas.Entities.Core;
 using naturalgas.Helpers.Core;
 using naturalgas.Helpers.Customer;
 using naturalgas.Models.Customer;
+using NaturalGas.Models.Customer;
+using NaturalGas.Helpers.Customer;
 
 namespace ESPL.NG.Services
 {
@@ -41,6 +43,8 @@ namespace ESPL.NG.Services
         bool CustomerExists(Guid authorId);
         IEnumerable<LookUpItem> GetCustomerAsLookUp();        
         NationalIDResponse ValidateNationalId(string nationalId);
+        IEnumerable<CustomerRegistrationReportDto> GetCustomerRegistrationReport(
+            CustomerRegistrationReportParameters CustomerRegistrationReportParameters);
 
         #endregion
     }
