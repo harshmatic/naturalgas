@@ -509,31 +509,37 @@ namespace ESPL.NG.Services
             CustomerRegistrationReportParameters CustomerRegistrationReportParameters)
         {
 
-            var result = from c in _context.Customer
-                         group c by new { c.Gender, c.CreatedOn.Year, }
-                         into g
-                         select new CustomerRegistrationReportDto()
-                         {
-                             CustomerCount = g.Count(),
-                             Year = g.Key.Year,
-                             Gender = g.Key.Gender
-                         };
+
 
             if (CustomerRegistrationReportParameters.Year != 0)
-                result = from c in _context.Customer
-                         where c.CreatedOn.Year == CustomerRegistrationReportParameters.Year
-                         group c by new { c.Gender, c.CreatedOn.Month, c.CreatedOn.Year, }
+            {
+                return (from c in _context.Customer
+                       where c.CreatedOn.Year == CustomerRegistrationReportParameters.Year
+                       group c by new { c.Gender, c.CreatedOn.Month, c.CreatedOn.Year, }
                          into g
-                         select new CustomerRegistrationReportDto()
-                         {
-                             CustomerCount = g.Count(),
-                             Year = g.Key.Year,
-                             Month = g.Key.Month,
-                             Gender = g.Key.Gender
-                         };
+                       select new CustomerRegistrationReportDto()
+                       {
+                           CustomerCount = g.Count(),
+                           Year = g.Key.Year,
+                           Month = g.Key.Month,
+                           Gender = g.Key.Gender
+                       }).OrderBy(c=>c.Month);
 
 
-            return result;
+            }
+            else
+            {
+                return from c in _context.Customer
+                       where c.CreatedOn.Year >= (DateTime.Now.AddYears(-5).Year)
+                       group c by new { c.Gender, c.CreatedOn.Year, }
+                                         into g
+                       select new CustomerRegistrationReportDto()
+                       {
+                           CustomerCount = g.Count(),
+                           Year = g.Key.Year,
+                           Gender = g.Key.Gender
+                       };
+            }
 
         }
 
