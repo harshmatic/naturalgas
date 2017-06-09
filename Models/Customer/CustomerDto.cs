@@ -23,6 +23,7 @@ namespace ESPL.NG.Models
         public string Pin { get; set; }
         public string Address { get; set; }
         public bool Status { get; set; }
+        public string Gender { get; set; }
         public string  DistributorName { get; set; }
         public string DistributorAddress { get; set; }
         public string DistributorContact { get; set; }
