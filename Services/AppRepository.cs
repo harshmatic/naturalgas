@@ -513,32 +513,34 @@ namespace ESPL.NG.Services
 
             if (CustomerRegistrationReportParameters.Year != 0)
             {
-                return (from c in _context.Customer
-                       where c.CreatedOn.Year == CustomerRegistrationReportParameters.Year
-                       group c by new { c.Gender, c.CreatedOn.Month, c.CreatedOn.Year, }
-                         into g
-                       select new CustomerRegistrationReportDto()
-                       {
-                           CustomerCount = g.Count(),
-                           Year = g.Key.Year,
-                           Month = g.Key.Month,
-                           Gender = g.Key.Gender
-                       }).OrderBy(c=>c.Month);
+                return _context.Customer
+                        .Where(c => c.CreatedOn.Year == CustomerRegistrationReportParameters.Year)
+                        .GroupBy(c => new { c.CreatedOn.Month })
+                        .Select(g => new CustomerRegistrationReportDto()
+                        {
+                            CustomerCount = g.Count(),
+                            MaleCount = g.Where(c => c.Gender == "M").Count(),
+                            FemaleCount = g.Where(c => c.Gender == "F").Count(),
+                            Month = g.Key.Month
+                        })
+                        .OrderBy(c => c.Month);
+
 
 
             }
             else
             {
-                return from c in _context.Customer
-                       where c.CreatedOn.Year >= (DateTime.Now.AddYears(-5).Year)
-                       group c by new { c.Gender, c.CreatedOn.Year, }
-                                         into g
-                       select new CustomerRegistrationReportDto()
-                       {
-                           CustomerCount = g.Count(),
-                           Year = g.Key.Year,
-                           Gender = g.Key.Gender
-                       };
+				return _context.Customer
+                        .Where(c => c.CreatedOn.Year >= DateTime.Now.AddYears(-5).Year)
+                        .GroupBy(c => new { c.CreatedOn.Year })
+                        .Select(g => new CustomerRegistrationReportDto()
+                        {
+                            CustomerCount = g.Count(),
+                            MaleCount = g.Where(c => c.Gender == "M").Count(),
+                            FemaleCount = g.Where(c => c.Gender == "F").Count(),
+                            Year = g.Key.Year
+                        })
+                       .OrderBy(c => c.Year);
             }
 
         }
