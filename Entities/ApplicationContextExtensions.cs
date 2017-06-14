@@ -21,7 +21,7 @@ namespace ESPL.NG.Entities
             {
 
                 var customers = new List<Customer>();
-                for (int i = 1; i <= 100; i++)
+                for (int i = 1; i <= 1000; i++)
                 {
                     var cust = new Customer
                     {
@@ -43,39 +43,39 @@ namespace ESPL.NG.Entities
                     };
                     customers.Add(cust);
                     k++;
-                    if (k == 10)
+                    if (k == 100)
                         d++;
-                    if (k == 25)
+                    else if (k == 350)
                         d++;
-                    if (k == 45)
+                    else if (k == 700)
                         d++;
-                    if (k == 60)
+                    else if (k == 1200)
                         d++;
-                    if (k == 70)
+                    else if (k == 1600)
                         d++;
-                    if (k == 90)
+                    else if (k == 1900)
                         d++;
-                    if (k == 130)
+                    else if (k == 2245)
                         d++;
-                    if (k == 180)
+                    else if (k == 2468)
                         d++;
-                    if (k == 210)
+                    else if (k == 2600)
                         d++;
-                    if (k == 300)
+                    else if (k == 2900)
                         d++;
-                    if (k == 340)
+                    else if (k == 3102)
                         d++;
-                    if (k == 380)
+                    else if (k == 3400)
                         d++;
-                    if (k == 400)
+                    else if (k == 3800)
                         d++;
-                    if (k == 430)
+                    else if (k == 4250)
                         d++;
-                    if (k == 450)
+                    else if (k == 4754)
                         d++;
-                    if (k == 470)
+                    else if (k == 4850)
                         d++;
-                    if (k == 490)
+                    else if (k == 4902)
                         d++;
 
                 };
