@@ -12,6 +12,7 @@ namespace ESPL.NG.Entities
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
             //Database.Migrate();
+            Database.SetCommandTimeout(150000);
         }
         public DbSet<Customer> Customer { get; set; }
         protected override void OnModelCreating(ModelBuilder modelbuilder)
@@ -26,6 +27,8 @@ namespace ESPL.NG.Entities
             //Addeing Index on Customer
             modelbuilder.Entity<Customer>()
             .HasIndex(p => new { p.IsDelete, p.Firstname, p.NationalID });
+            modelbuilder.Entity<Customer>()
+            .HasIndex(p => new { p.CreatedOn, p.Gender});
         }
 
     }
